@@ -2,7 +2,7 @@ import logging
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
-from routers import SSTmain
+from routers import final
 
 #create FastAPI app
 app = FastAPI(
@@ -30,5 +30,5 @@ async def root():
 
 
 ##routers
-app.include_router(SSTmain.router,prefix='/sst',tags=['SSTmain'])
+app.include_router(final.router,prefix='/sst',tags=['SSTmain'])
 

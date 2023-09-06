@@ -2,6 +2,7 @@ import logging
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
+
 from routers import final
 
 #create FastAPI app
@@ -29,6 +30,5 @@ async def root():
     return {"message": "Hello World"}
 
 
-##routers
 app.include_router(final.router,prefix='/sst',tags=['SSTmain'])
 

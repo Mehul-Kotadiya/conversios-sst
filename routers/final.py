@@ -159,7 +159,7 @@ def sample_set_iam_policy(resource):
                 }
         )
 
-    # Make the request
+
     response = client.set_iam_policy(request=request)
     print(response)
 

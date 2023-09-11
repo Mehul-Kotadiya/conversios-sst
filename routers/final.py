@@ -135,14 +135,15 @@ async def create_service_tagging(store_id,region,container_config,preview_server
     operation = run_client.create_service(metadata= [("name", "sst-"+store_id)],request=request)
     print("Setting up server side tagging...")
     response = operation.result()
+    res1=str(response)
     server_url_value=response.uri
     nx=(str(response.name))
     print("Name of full server name :",nx)
     nt=(str(response.name)).split("services/")[1]
     print("Name of server:",nt)
     print("Server_url",server_url_value)
-    print("Tagging server:",response)
-    return server_url_value,nx,response
+    print("Tagging server:",res1)
+    return server_url_value,nx,res1
 
 def sample_set_iam_policy(resource):
     client = run_v2.ServicesClient()

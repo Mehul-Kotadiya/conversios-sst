@@ -26,9 +26,9 @@ async def sst_create(request: Request):
     print("container_config",container_config)
     preview_server_url,preview_name=await create_service_preview_tagging(store_id,region,container_config)
     sample_set_iam_policy(preview_name)
-    result1,tagging_name=await create_service_tagging(store_id,region,container_config,preview_server_url)
+    result1,tagging_name,details=await create_service_tagging(store_id,region,container_config,preview_server_url)
     sample_set_iam_policy(tagging_name)
-    return {"server_url": result1}
+    return {"Payload Details": details}
 
 # location="asia-south1"
 # project_id=os.getenv("PROJECT_ID")
@@ -142,7 +142,7 @@ async def create_service_tagging(store_id,region,container_config,preview_server
     print("Name of server:",nt)
     print("Server_url",server_url_value)
     print("Tagging server:",response)
-    return server_url_value,nx
+    return server_url_value,nx,response
 
 def sample_set_iam_policy(resource):
     client = run_v2.ServicesClient()

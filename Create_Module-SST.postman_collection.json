@@ -1,0 +1,28 @@
+{
+	"info": {
+		"_postman_id": "f3511744-2a39-4338-8bb3-1564609ab5aa",
+		"name": "Create Module-SST",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "20877587"
+	},
+	"item": [
+		{
+			"name": "https://dev-backend-sst-nszpmsl3ca-el.a.run.app/sst/create",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"store_id\":\"1237878\",\n    \"region\" : \"asia-south1\",\n    \"container_config\":\"aWQ9R1RNLU5EWlRTRE0mZW52PTEmYXV0aD1ma0hfRHNyOWk1YmZQT1dvSGxyY0Zn\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://dev-backend-sst-nszpmsl3ca-el.a.run.app/sst/create"
+			},
+			"response": []
+		}
+	]
+}

@@ -18,7 +18,7 @@ project_id = config["gcp"]["project_id"]
 # name=os.getenv("NAME")
 # name="dem66"
 
-def create_service_preview_tagging(store_id: str,region:str,container_config:str):
+async def create_service_preview_tagging(store_id: str,region:str,container_config:str):
     run_client = run_v2.ServicesClient()
     suffix="-preview"
     request = run_v2.CreateServiceRequest(
@@ -76,7 +76,7 @@ def create_service_preview_tagging(store_id: str,region:str,container_config:str
     return preview_url_value,nx
 
 
-def create_service_tagging(store_id,region,container_config,preview_server_url):
+async def create_service_tagging(store_id,region,container_config,preview_server_url):
     run_client = run_v2.ServicesClient()
 
     request = run_v2.CreateServiceRequest(

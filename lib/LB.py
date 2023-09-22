@@ -75,8 +75,8 @@ def https_proxy_attach_ssl_certificate(certis,new_certificate_name):
 
     print("Certificate updated:", response)
 
-load_balancer = https_proxy_get()
-print(load_balancer)
+# load_balancer = https_proxy_get()
+# print(load_balancer)
 # for certi in load_balancer.ssl_certificates:
 #     domains = ssl_get_managed_domains(certi)
 #     print(domains)

@@ -14,7 +14,7 @@ def domain_list(new_domain: str,certificate_name: str):
     certi_list = []
 
     for item in certis:
-        certificate_domains = ssl_get_managed_domains(certificate_name)
+        certificate_domains = ssl_get_managed_domains(item)
         temp = {"name":certificate_name,"managed":{"domains":certificate_domains}}
         certi_list.append(temp)
         if len(certi["managed"]["domains"]) >= len(temp["managed"]["domains"]):

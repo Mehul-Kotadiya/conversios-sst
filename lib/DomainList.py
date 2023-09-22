@@ -9,7 +9,7 @@ project = config["gcp"]["project_id"]
 lb = config["gcp"]["load_balancer"]
 
 
-def domain_list(new_domain: str):
+def domain_list(new_domain: str,certificate_name: str):
     certis = https_proxy_get(load_balancer=lb)
     certi_list = []
 

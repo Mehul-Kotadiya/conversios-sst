@@ -38,19 +38,19 @@ def https_proxy_list():
     for response in page_result:
         print(response)
 
-def https_proxy_attach_ssl_certificate(certis,new_certificate_name):
+def https_proxy_attach_ssl_certificate(certificate_urls):
 
     # compute_service = build('compute', 'v1', credentials=credentials)
     # client = compute_v1.TargetHttpsProxiesClient()
 
     # load_balancer_name = 'test-lb-target-proxy'
-    certificate_urls=[]
-    for item in certis:
-        certificate_urls.append(f'https://www.googleapis.com/compute/v1/projects/{project_id}/global/sslCertificates/{item}')
+    # certificate_urls=[]
+    # for item in certis:
+    #     certificate_urls.append(f'https://www.googleapis.com/compute/v1/projects/{project_id}/global/sslCertificates/{item}')
 
-    new_certificate_url=f'https://www.googleapis.com/compute/v1/projects/{project_id}/global/sslCertificates/{new_certificate_name}'
+    # new_certificate_url=f'https://www.googleapis.com/compute/v1/projects/{project_id}/global/sslCertificates/{new_certificate_name}'
 
-    certificate_urls.append(new_certificate_url)
+    # certificate_urls.append(new_certificate_url)
     
 
     request_body = {

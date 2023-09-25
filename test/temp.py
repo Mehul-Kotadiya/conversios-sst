@@ -12,7 +12,7 @@ lb = config["gcp"]["load_balancer"]
 # x = compute_v1.UrlMap(name="new_temp", default_service = "backend-service-using-python-new-new")
 # print(x)
 
-def sample_insert():
+def urlmap_insert():
     # Create a client
     client = compute_v1.UrlMapsClient()
 
@@ -27,10 +27,10 @@ def sample_insert():
     response = client.insert(request=request)
 
     # Handle the response
-    print(response)
+    return response
 
 
-def sample_set_url_map():
+def urlmap_set_https_proxy():
     # Create a client
     client = compute_v1.TargetHttpsProxiesClient()
 
@@ -48,10 +48,10 @@ def sample_set_url_map():
     response = client.set_url_map(request=request)
 
     # Handle the response
-    print(response)
+    return response
 
 
-def sample_get_be():
+def backend_get():
     # Create a client
     client = compute_v1.BackendServicesClient()
 
@@ -65,7 +65,7 @@ def sample_get_be():
     response = client.get(request=request)
 
     # Handle the response
-    print(response)
+    return response
 
 
 def urlmap_get():
@@ -75,47 +75,48 @@ def urlmap_get():
     # Initialize request argument(s)
     request = compute_v1.GetUrlMapRequest(
         project=project,
-        url_map="test-lb"
+        url_map=lb
     )
 
     # Make the request
     response = client.get(request=request)
 
     # Handle the response
-    print(response)
     return response
 
 
+def hostrule_add(domain: list, backend_name: str, paths: list = ["/*"]):
+    urlMapObj = urlmap_get()
 
-urlMapObj = urlmap_get()
-
-backend_name = "https://www.googleapis.com/compute/v1/projects/tatvic-gcp-dev-team/global/backendServices/backend-service-using-python-new-new"
-path_matcher_name = "pm1"
+    backend_service_name = backend_name
+    backend_name = f"https://www.googleapis.com/compute/v1/projects/{project}/global/backendServices/{backend_service_name}".format(project, backend_service_name)
 
 
-pathMatcherObj = compute_v1.PathMatcher(
-    default_service=backend_name,
-    name=path_matcher_name,
-    path_rules=[compute_v1.PathRule(service = backend_name, paths = ["/test"])]
-)
-hostRule = compute_v1.HostRule(hosts=["sst.tatvic.net"], path_matcher=path_matcher_name)
+    # add some random name, can we keep it static?
+    path_matcher_name = "pm1"
 
-# print(pathMatcherObj)
-# print(hostRule)
-# exit()
+    pathMatcherObj = compute_v1.PathMatcher(
+        default_service=backend_name,
+        name=path_matcher_name,
+        path_rules=[compute_v1.PathRule(service = backend_name, paths = paths)]
+    )
+    hostRule = compute_v1.HostRule(hosts=domain, path_matcher=path_matcher_name)
 
-urlMapObj.path_matchers.append(pathMatcherObj)
-urlMapObj.host_rules.append(hostRule)
 
-request = compute_v1.UpdateUrlMapRequest(
-    project=project,
-    url_map="test-lb",
-    url_map_resource=urlMapObj
-)
+    urlMapObj.path_matchers.append(pathMatcherObj)
+    urlMapObj.host_rules.append(hostRule)
 
-# Make the request
-client = compute_v1.UrlMapsClient()
-response = client.update(request=request)
+    request = compute_v1.UpdateUrlMapRequest(
+        project=project,
+        
+        # wtf is this, probably Load balancer?
+        url_map="test-lb",
+        url_map_resource=urlMapObj
+    )
 
-# Handle the response
-print(response)
+    # Make the request
+    client = compute_v1.UrlMapsClient()
+    response = client.update(request=request)
+
+    # Handle the response
+    print(response)

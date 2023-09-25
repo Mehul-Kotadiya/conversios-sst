@@ -24,7 +24,8 @@ def ssl_create_managed(certificate_name, domains):
     )
 
     response = client.insert(request=request)
-    print(response)
+    response = response.result()
+    return response
 
 
 def ssl_delete(certificate_name):

@@ -38,6 +38,7 @@ async def sst_create(request: Request):
     certificate_name=f'sst-{store_id}-certificate'
     list_domain,certis=domain_list(domain,certificate_name)
     ssl_create_managed(certificate_name=certificate_name,domains=list_domain)
+    # Function to check state of newly created certificate to be added
     https_proxy_attach_ssl_certificate(certis=certis,new_certificate_name=certificate_name)
 
 

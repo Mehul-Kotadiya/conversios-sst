@@ -9,6 +9,7 @@ project = config["gcp"]["project_id"]
 lb = config["gcp"]["load_balancer"]
 
 client = compute_v1.TargetHttpsProxiesClient()
+compute_client = compute_v1.InstancesClient()
 
 
 def https_proxy_get():
@@ -22,7 +23,6 @@ def https_proxy_get():
     # Make the request
     response = client.get(request=request)
     return response
-
 
 def https_proxy_list():
     # Initialize request argument(s)
@@ -74,6 +74,83 @@ def https_proxy_attach_ssl_certificate():
     # ).execute()
 
     print("Certificate updated:", response)
+
+def https_proxy_attach_backend(backend_service_name: str, url_map_name: str):
+
+    request_body = {
+        "urlMap": f"projects/{project}/global/urlMaps/{url_map_name}",
+        # why is this empty
+        "sslCertificates": [],
+        "quicOverride": "NONE",
+        "sslPolicy": "",
+        "service": f"projects/{project}/global/backendServices/{backend_service_name}"
+    }
+
+    request = compute_v1.SetUrlMapTargetHttpsProxyRequest(
+        project=project,
+        target_https_proxy=lb,
+        request_body=request_body
+    )
+
+    compute_client.setUrlMapTargetHttpsProxy(request=request)
+
+def backend_create(backend_service_name: str):
+
+    backend_service_body = {
+        "name": backend_service_name,
+        "description": "Backend service for Cloud Run",
+        "protocol": "HTTP",
+        # "healthChecks": ["your-health-check-url"]
+        # "timeoutSec": 30,
+        # "connectionDraining": {
+        # "drainingTimeoutSec": 60
+        # },
+        "loadBalancingScheme": "EXTERNAL_MANAGED",
+        # "affinityCookieTtlSec": 300
+    }
+
+    request = compute_v1.BackendServicesInsertRequest(
+        project=project,
+        backend_service=backend_service_body,
+    )
+
+    backend_service = compute_client.insert(
+        project=project, request=request)
+
+    return backend_service
+
+def backend_insert_neg(backend_service_name: str, neg_name: str):
+
+    backend_service_body = {
+        "networkEndpointGroups": [f"projects/{project}/zones/global/networkEndpointGroups/{neg_name}"]
+    }
+
+    request = compute_v1.BackendServicesPatchRequest(
+        project=project,
+        backend_service=backend_service_body,
+    )
+
+    compute_client.patch(project=project,
+                         backend_service=backend_service_name, request=request)
+
+def neg_create_regional_cloud_run(region: str, neg_name: str):
+    request = compute_v1.InsertRegionNetworkEndpointGroupRequest(
+        project=project,
+        region=region,
+
+        network_endpoint_group_resource=compute_v1.NetworkEndpointGroup(
+            name=neg_name,
+            network_endpoint_type="SERVERLESS",
+
+            cloud_run=compute_v1.NetworkEndpointGroupCloudRun(
+                service=neg_name
+            )
+        )
+    )
+
+    client = compute_v1.RegionNetworkEndpointGroupsClient()
+    response = client.insert(request)
+    return response
 
 load_balancer = https_proxy_get()
 print(load_balancer)

@@ -41,6 +41,9 @@ async def sst_create(request: Request):
     # Function to check state of newly created certificate to be added
     https_proxy_attach_ssl_certificate(certificate_urls=certis)
 
+    # Neg Creation
+    # BE Creation
+    # Host rule addition
 
 
     return {"Payload Details": details}

@@ -136,10 +136,13 @@ neg_url = f"{regional_base_url}/networkEndpointGroups/{neg_name}".format(project
 backend_url = f"{global_base_url}/backendServices/{backend_service_name}".format(project, backend_service_name)
 
 
-def backend_create_global(backend_service_name: str, neg_url: str):
+def backend_create_global(backend_service_name: str, neg_name: str):
 
     # Create a client
     client = compute_v1.BackendServicesClient()
+
+    base_url = f"https://www.googleapis.com/compute/v1/projects/{project}/global".format(project, region)
+    neg_url = f"{base_url}/networkEndpointGroups/{neg_name}".format(neg_name)
 
     # neg_url = f"projects/{project}/global/networkEndpointGroups/{neg_name}".format(project, region, neg_name)
 
@@ -159,7 +162,11 @@ def backend_create_global(backend_service_name: str, neg_url: str):
     response = response.result()
     return response
 
-def backend_create_regional(region: str, backend_service_name: str, neg_url: str):
+def backend_create_regional(region: str, backend_service_name: str, neg_name: str):
+
+    base_url = f"https://www.googleapis.com/compute/v1/projects/{project}/regions/{region}".format(project, region)
+    neg_url = f"{base_url}/networkEndpointGroups/{neg_name}".format(neg_name)
+
     client = compute_v1.RegionBackendServicesClient()
 
     # Initialize request argument(s)
@@ -216,16 +223,16 @@ def urlmap_get():
     # Handle the response
     return response
 
-def hostrule_add(domain: list, backend_url: str, paths: list = ["/test"]):
+def hostrule_add(domain: list, backend_service_name: str, paths: list = ["/test"]):
     urlMapObj = urlmap_get()
 
     # backend_service_name = backend_name
-    backend_url = backend_url
-    # backend_name = f"https://www.googleapis.com/compute/v1/projects/{project}/global/backendServices/{backend_service_name}".format(project, backend_service_name)
+    base_url = f"https://www.googleapis.com/compute/v1/projects/{project}/global".format(project, region)
+    backend_url = f"{base_url}/backendServices/{backend_service_name}".format(project, backend_service_name)
 
 
     # add some random name, can we keep it static?
-    path_matcher_name = "pm1"
+    path_matcher_name = "path-1"
 
     pathMatcherObj = compute_v1.PathMatcher(
         default_service=backend_url,

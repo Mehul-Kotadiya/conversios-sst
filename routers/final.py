@@ -34,16 +34,21 @@ async def sst_create(request: Request):
     result1,tagging_name,details=await create_service_tagging(store_id,region,container_config,preview_server_url)
     sample_set_iam_policy(tagging_name)
 
-
     certificate_name=f'sst-{store_id}-certificate'
     list_domain,certis=domain_list(domain,certificate_name)
     ssl_create_managed(certificate_name=certificate_name,domains=list_domain)
     # Function to check state of newly created certificate to be added
     https_proxy_attach_ssl_certificate(certificate_urls=certis)
 
-    # Neg Creation
-    # BE Creation
-    # Host rule addition
+    # cloud_run_name = tagging_name
+    # backend_service_name = f"{store_id}-{region}-be"
+    # neg_name = f"{store_id}-{region}-neg"
+
+    # Pending Tasks
+    # 
+    # neg_create_regional_cloud_run()
+    # backend_create_global()
+    # hostrule_add()
 
 
     return {"Payload Details": details}

@@ -48,8 +48,8 @@ async def sst_create(request: Request):
 
     # Latest revision additions Rev: test-backend-sst-lb-00019
     cloud_run_name = tagging_name
-    backend_service_name = f"{cloud_run_name}_be"
-    neg_name = f"{cloud_run_name}_neg"
+    backend_service_name = f"{cloud_run_name}-be"
+    neg_name = f"{cloud_run_name}-neg"
 
     neg_create_regional_cloud_run(region=region, neg_name=neg_name, cloud_run_service_name= cloud_run_name)
     backend_create_global(backend_service_name=backend_service_name, neg_name = neg_name, neg_region=region)

@@ -165,6 +165,8 @@ def urlmap_get():
     return response
 
 def hostrule_add(domain: list, backend_service_name: str, paths: list = ["/test"]):
+    
+    lb = lb.replace("-target-proxy", "")
     urlMapObj = urlmap_get()
 
     # backend_service_name = backend_name

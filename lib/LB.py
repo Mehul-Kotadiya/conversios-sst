@@ -153,7 +153,9 @@ def urlmap_get():
     # Initialize request argument(s)
     request = compute_v1.GetUrlMapRequest(
         project=project,
-        url_map=lb
+
+        # .replace("-target-proxy","")
+        url_map=lb.replace("-target-proxy","")
     )
 
     # Make the request

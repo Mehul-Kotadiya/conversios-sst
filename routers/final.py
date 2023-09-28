@@ -38,7 +38,8 @@ async def sst_create(request: Request):
     result1, tagging_name, details = await create_service_tagging(store_id, region, container_config, preview_server_url)
     sample_set_iam_policy(tagging_name)
 
-    certificate_name = f'sst_{store_id}_certificate'
+    certificate_name = f'sst-{store_id}-certificate'
+    print(certificate_name)
     list_domain, certis = domain_list(domain, certificate_name)
     ssl_create_managed(certificate_name=certificate_name, domains=list_domain)
     # Function to check state of newly created certificate to be added

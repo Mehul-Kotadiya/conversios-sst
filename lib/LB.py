@@ -146,7 +146,7 @@ def neg_create_regional_cloud_run(region: str, neg_name: str, cloud_run_service_
     response = response.result()
     return response
 
-def urlmap_get():
+def urlmap_get(lb: str):
     # Create a client
     client = compute_v1.UrlMapsClient()
 
@@ -155,7 +155,7 @@ def urlmap_get():
         project=project,
 
         # .replace("-target-proxy","")
-        url_map=lb.replace("-target-proxy","")
+        url_map=lb
     )
 
     # Make the request
@@ -166,9 +166,9 @@ def urlmap_get():
 
 def hostrule_add(domain: list, backend_service_name: str, paths: list = ["/test"]):
     
-    lb = lb.replace("-target-proxy", "")
-    urlMapObj = urlmap_get()
-
+    
+    new_lb = lb.replace("-target-proxy","")
+    urlMapObj = urlmap_get(lb = new_lb)
     # backend_service_name = backend_name
     base_url = f"https://www.googleapis.com/compute/v1/projects/{project}/global".format(project)
     backend_url = f"{base_url}/backendServices/{backend_service_name}".format(project, backend_service_name)
@@ -192,7 +192,7 @@ def hostrule_add(domain: list, backend_service_name: str, paths: list = ["/test"
         project=project,
         
         # wtf is this, probably Load balancer?
-        url_map=lb,
+        url_map=new_lb,
         url_map_resource=urlMapObj
     )
 

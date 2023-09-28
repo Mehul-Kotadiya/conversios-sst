@@ -75,12 +75,12 @@ def https_proxy_attach_ssl_certificate(certificate_urls):
 
     print("Certificate updated:", response)
 
-def backend_create_global(backend_service_name: str, neg_name: str):
+def backend_create_global(backend_service_name: str, neg_name: str, neg_region: str):
 
     # Create a client
     client = compute_v1.BackendServicesClient()
 
-    base_url = f"https://www.googleapis.com/compute/v1/projects/{project}/global".format(project, region)
+    base_url = f"https://www.googleapis.com/compute/v1/projects/{project}/regions/{neg_region}".format(project, neg_region)
     neg_url = f"{base_url}/networkEndpointGroups/{neg_name}".format(neg_name)
 
     # neg_url = f"projects/{project}/global/networkEndpointGroups/{neg_name}".format(project, region, neg_name)
@@ -126,7 +126,7 @@ def backend_create_regional(region: str, backend_service_name: str, neg_name: st
     # Handle the response
     return response
 
-def neg_create_regional_cloud_run(region: str, neg_name: str):
+def neg_create_regional_cloud_run(region: str, neg_name: str, cloud_run_service_name: str):
     request = compute_v1.InsertRegionNetworkEndpointGroupRequest(
         project=project,
         region=region,
@@ -166,7 +166,7 @@ def hostrule_add(domain: list, backend_service_name: str, paths: list = ["/test"
     urlMapObj = urlmap_get()
 
     # backend_service_name = backend_name
-    base_url = f"https://www.googleapis.com/compute/v1/projects/{project}/global".format(project, region)
+    base_url = f"https://www.googleapis.com/compute/v1/projects/{project}/global".format(project)
     backend_url = f"{base_url}/backendServices/{backend_service_name}".format(project, backend_service_name)
 
 

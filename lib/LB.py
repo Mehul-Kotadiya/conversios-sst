@@ -175,7 +175,7 @@ def hostrule_add(domain: list, backend_service_name: str, paths: list = ["/test"
 
 
     # add some random name, can we keep it static?
-    path_matcher_name = "path-1"
+    path_matcher_name = f"{backend_service_name}-pm".format(backend_service_name)
 
     pathMatcherObj = compute_v1.PathMatcher(
         default_service=backend_url,

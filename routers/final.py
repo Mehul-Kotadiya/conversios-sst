@@ -47,7 +47,7 @@ async def sst_create(request: Request):
     # Works till here Rev: test-backend-sst-lb-00018-lrx #
 
     # Latest revision additions Rev: test-backend-sst-lb-00019
-    cloud_run_name = tagging_name
+    cloud_run_name = f"sst-{store_id}"
     backend_service_name = f"sst-{store_id}-be"
     neg_name = f"sst-{store_id}-neg"
     print(json.dumps({"cloud_run_name": cloud_run_name, "backend_service_name": backend_service_name, "neg_name": neg_name}))

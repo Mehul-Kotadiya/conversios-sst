@@ -36,7 +36,7 @@ def domain_list(new_domain: str,certificate_name: str):
     new_certificate_domains = smallest_certificate_domains[:]
     new_certificate_domains.append(new_domain)
     # new_certificate = certificate_name
-    new_certificate = 'https://www.googleapis.com/compute/v1/projects/{}/global/sslCertificates/{}'.format(project,certificate_name)
+    new_certificate = f'https://www.googleapis.com/compute/v1/projects/{project}/global/sslCertificates/{certificate_name}'.format(project,certificate_name)
     
     
     # ssl_create_managed(certificate_name = new_certificate, domains=new_certificate_domains)

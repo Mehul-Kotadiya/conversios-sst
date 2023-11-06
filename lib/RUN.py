@@ -12,6 +12,9 @@ config.read('config.ini')
 project_id = config["gcp"]["project_id"]
 
 
+
+
+
 # location="asia-south1"
 # project_id=os.getenv("PROJECT_ID")
 # location=os.getenv("LOCATION")

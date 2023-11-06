@@ -7,6 +7,7 @@ config = configparser.ConfigParser()
 config.read('config.ini')
 project = config["gcp"]["project_id"]
 lb = config["gcp"]["load_balancer"]
+proxy_name="-target-proxy"
 
 client = compute_v1.TargetHttpsProxiesClient()
 compute_client = compute_v1.InstancesClient()
@@ -14,16 +15,18 @@ compute_client = compute_v1.InstancesClient()
 
 def https_proxy_get(load_balancer: str):
     new_lb = load_balancer
-
+    tar_proxy=str(new_lb+proxy_name)
+    # print("check",new_lb)
     request = compute_v1.GetTargetHttpsProxyRequest(
         project=project,
-        target_https_proxy=new_lb,
+        target_https_proxy=tar_proxy,
     )
-
     # Make the request
     response = client.get(request=request)
+    print('re',response)
     certis = response.ssl_certificates
     return certis
+
 
 def https_proxy_list():
     # Initialize request argument(s)
@@ -60,7 +63,7 @@ def https_proxy_attach_ssl_certificate(certificate_urls):
     # Initialize request argument(s)
     request = compute_v1.SetSslCertificatesTargetHttpsProxyRequest(
         project= project,
-        target_https_proxy= lb,
+        target_https_proxy= str(lb+proxy_name),
         target_https_proxies_set_ssl_certificates_request_resource = request_body
     )
 

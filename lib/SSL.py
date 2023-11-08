@@ -60,7 +60,7 @@ def ssl_get_managed_domains(certificate_name):
     response = client.get(request=request)
 
     # Handle the response
-    return response.managed.domains
+    return response.creation_timestamp, response.managed.domains
 
 
 # certificate_name = "test-ssl-1"

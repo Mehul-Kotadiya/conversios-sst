@@ -215,3 +215,5 @@ def hostrule_add(domain: list, backend_service_name: str, paths: list = ["/test"
 
 # x = https_proxy_attach_ssl_certificate()
 # print(x)
+
+

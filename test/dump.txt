@@ -1,0 +1,25 @@
+['sst.tatvic.net', 'deep.com', 'sstcloud.tagmate.app']
+ ['https://www.googleapis.com/compute/v1/projects/server-side-tagging-392006/global/sslCertificates/test-3-certificate', 
+ 'https://www.googleapis.com/compute/v1/projects/server-side-tagging-392006/global/sslCertificates/sst-certificate-1699352792325']
+
+
+ test-lb-2-target-proxy
+['sst.tatvic.net', 'deep.com', 'sstcloud.tagmate.app'] 
+['https://www.googleapis.com/compute/v1/projects/server-side-tagging-392006/global/sslCertificates/test-3-certificate',
+ 'https://www.googleapis.com/compute/v1/projects/server-side-tagging-392006/global/sslCertificates/sst-certificate-b8qyyzrguu',
+ 'https://www.googleapis.com/compute/v1/projects/server-side-tagging-392006/global/sslCertificates/sst-certificate-5fwiduafr2', 
+ 'https://www.googleapis.com/compute/v1/projects/server-side-tagging-392006/global/sslCertificates/sst-certificate-1699355776206']
+
+ ['https://www.googleapis.com/compute/v1/projects/server-side-tagging-392006/global/sslCertificates/test-3-certificate',
+  'https://www.googleapis.com/compute/v1/projects/server-side-tagging-392006/global/sslCertificates/sst-certificate-b8qyyzrguu',
+   'https://www.googleapis.com/compute/v1/projects/server-side-tagging-392006/global/sslCertificates/sst-certificate-5fwiduafr2']
+
+
+https://www.googleapis.com/compute/v1/projects/server-side-tagging-392006/global/sslCertificates/test-3-certificate         2023-10-04T04:38:14.477-07:00
+https://www.googleapis.com/compute/v1/projects/server-side-tagging-392006/global/sslCertificates/sst-certificate-b8qyyzrguu 2023-11-07T03:04:57.170-08:00
+https://www.googleapis.com/compute/v1/projects/server-side-tagging-392006/global/sslCertificates/sst-certificate-ufm3ao6nmi 2023-11-07T03:28:52.277-08:00
+
+{'https://www.googleapis.com/compute/v1/projects/server-side-tagging-392006/global/sslCertificates/test-3-certificate': ['2023-10-04T04:38:14.477-07:00', ['sstcloud.tagmate.app', 'sst.tatvic.net']], 
+'https://www.googleapis.com/compute/v1/projects/server-side-tagging-392006/global/sslCertificates/sst-certificate-b8qyyzrguu': ['2023-11-07T03:04:57.170-08:00', ['sstcloud.tagmate.app', 'sst.tatvic.net', 'deeptest.com']], 
+'https://www.googleapis.com/compute/v1/projects/server-side-tagging-392006/global/sslCertificates/sst-certificate-5fwiduafr2': ['2023-11-07T03:11:25.068-08:00', ['sstcloud.tagmate.app', 'sst.tatvic.net', 'interntest.com']],
+ 'https://www.googleapis.com/compute/v1/projects/server-side-tagging-392006/global/sslCertificates/sst-certificate-ufm3ao6nmi': ['2023-11-07T03:28:52.277-08:00', ['sstcloud.tagmate.app', 'sst.tatvic.net', 'testtest.com']]}

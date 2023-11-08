@@ -14,11 +14,13 @@ from lib.DomainList import domain_list
 from google.cloud import datastore
 import random
 import string
+import time
 # project_id="server-side-tagging-392006"
 
 
 router = APIRouter()
 client = datastore.Client()
+timestamp1= round(time.time()*1000)
 
 @router.post('/create')
 async def sst_create(request: Request):
@@ -60,7 +62,7 @@ async def sst_create(request: Request):
     client.put(entity)
 
     if domain!= None:
-        certificate_name = f'sst-certificate-{generate_random_string(10)}'
+        certificate_name = f'sst-certificate-{timestamp1}'
         print(certificate_name)
         list_domain, certis = domain_list(domain, certificate_name)
         print("domain_list",list_domain)
@@ -74,8 +76,8 @@ async def sst_create(request: Request):
 
         # Latest revision additions Rev: test-backend-sst-lb-00019
         cloud_run_name = f"sst-{store_id}"
-        backend_service_name = f"sst-{store_id}-be-{generate_random_string(10)}"
-        neg_name = f"sst-{store_id}-neg-{generate_random_string(10)}"
+        backend_service_name = f"sst-{store_id}-be-{timestamp1}"
+        neg_name = f"sst-{store_id}-neg-{timestamp1}"
         print(json.dumps({"cloud_run_name": cloud_run_name, "backend_service_name": backend_service_name, "neg_name": neg_name}))
         
         neg_create_regional_cloud_run(region=region, neg_name=neg_name, cloud_run_service_name= cloud_run_name)
@@ -86,7 +88,7 @@ async def sst_create(request: Request):
         client.put(entity)
         hostrule_add(domain=[domain], backend_service_name=backend_service_name, paths=["/test", "/dev", "/pre-prod"])
     else:
-        print('Domain name not provided')
+        print('Domain not provided')
     
     return {"Payload Details": details}
 
@@ -249,7 +251,7 @@ async def update(request:Request):
         
 
 
-        certificate_name = f'sst-{store_id}-certificate-{generate_random_string(10)}'
+        certificate_name = f'sst-{store_id}-certificate-{timestamp1}'
         print(certificate_name)
         list_domain, certis = domain_list(domain, certificate_name)
         print("domain_list",list_domain)
@@ -263,8 +265,8 @@ async def update(request:Request):
 
         # Latest revision additions Rev: test-backend-sst-lb-00019
         cloud_run_name = f"sst-{store_id}"
-        backend_service_name = f"sst-{store_id}-be-{generate_random_string(10)}"
-        neg_name = f"sst-{store_id}-neg-{generate_random_string(10)}"
+        backend_service_name = f"sst-{store_id}-be-{timestamp1}"
+        neg_name = f"sst-{store_id}-neg-{timestamp1}"
         print(json.dumps({"cloud_run_name": cloud_run_name, "backend_service_name": backend_service_name, "neg_name": neg_name}))
         
         neg_create_regional_cloud_run(region=region, neg_name=neg_name, cloud_run_service_name= cloud_run_name)
@@ -287,7 +289,7 @@ async def update(request:Request):
         tagging_server_url = str(json_data['tagging_server-url'])
         
         domain = queryParams.get('domain')
-        certificate_name = f'sst-{store_id}-certificate-{generate_random_string(10)}'
+        certificate_name = f'sst-{store_id}-certificate-{timestamp1}'
         print(certificate_name)
         list_domain, certis = domain_list(domain, certificate_name)
         print("domain_list",list_domain)
@@ -302,8 +304,8 @@ async def update(request:Request):
 
         # Latest revision additions Rev: test-backend-sst-lb-00019
         cloud_run_name = f"sst-{store_id}"
-        backend_service_name = f"sst-{store_id}-be-{generate_random_string(10)}"
-        neg_name = f"sst-{store_id}-neg-{generate_random_string(10)}"
+        backend_service_name = f"sst-{store_id}-be-{timestamp1}"
+        neg_name = f"sst-{store_id}-neg-{timestamp1}"
         print(json.dumps({"cloud_run_name": cloud_run_name, "backend_service_name": backend_service_name, "neg_name": neg_name}))
         
         neg_create_regional_cloud_run(region=region, neg_name=neg_name, cloud_run_service_name= cloud_run_name)

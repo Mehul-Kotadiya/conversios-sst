@@ -27,10 +27,11 @@ app.add_middleware(
 async def batch_function ():
     config = configparser.ConfigParser()
     config.read('config.ini')
-    project = config["gcp"]["project_id"]
-    lb = config["gcp"]["load_balancer"]
-    proxy_name="-target-proxy"
-
+    project = "server-side-tagging-392006"
+    # config["gcp"]["project_id"]
+    # lb = config["gcp"]["load_balancer"]
+    # proxy_name="-target-proxy"
+    print(project)
 
     client = compute_v1.SslCertificatesClient()
     ssl_certificates = client.list(project=project)

@@ -10,3 +10,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 #copy source code
 COPY . ./
+
+CMD delete.py 

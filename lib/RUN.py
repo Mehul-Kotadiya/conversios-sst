@@ -58,7 +58,9 @@ async def create_service_preview_tagging(store_id: str,region:str,container_conf
             }
         }    
     )
-
+    print('request sucessfully set')
+    print("sst-"+store_id+suffix)
+    print(request)
     operation = run_client.create_service(metadata= [("name", "sst-"+store_id+suffix)],request=request)
     print("Setting up preview server")
     response = operation.result()

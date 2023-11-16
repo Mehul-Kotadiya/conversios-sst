@@ -12,6 +12,8 @@ from lib.SSL import ssl_create_managed
 from lib.LB import *
 from lib.DomainList import domain_list
 from google.cloud import datastore
+from google.cloud import pubsub_v1
+
 import random
 import string
 import time
@@ -20,10 +22,19 @@ import time
 
 router = APIRouter()
 client = datastore.Client()
-timestamp1= round(time.time()*1000)
+
+
+project_id = 'server-side-tagging-392006'
+topic_name='server-side-tagging-topic'
+
+def flag_method():
+    st = '12345'
+    return st
 
 @router.post('/create')
+
 async def sst_create(request: Request):
+    timestamp1= round(time.time()*1000)
     payload_bytes = await request.body()
     print(payload_bytes)
     payload_str = payload_bytes.decode("utf-8")
@@ -43,15 +54,16 @@ async def sst_create(request: Request):
     custom_key = client.key(kind,str(store_id),parent=parent_key)
     entity = datastore.Entity(key=custom_key)
 
-
     print("name", store_id)
     print("region", region)
     print("container_config", container_config)
 
     preview_server_url, preview_name = await create_service_preview_tagging(store_id, region, container_config)
     sample_set_iam_policy(preview_name)
+    print('preview-created')
     result1, tagging_name, details = await create_service_tagging(store_id, region, container_config, preview_server_url)
     sample_set_iam_policy(tagging_name)
+    print('all-created')
 
     entity["name"]=store_id
     entity['region']=region
@@ -60,9 +72,10 @@ async def sst_create(request: Request):
     entity['preview_tagging_server_url']=preview_server_url
     entity['tagging_server_url']=result1
     client.put(entity)
+    print('datastore part completed')
 
     if domain!= None:
-        certificate_name = f'sst-certificate-{timestamp1}'
+        certificate_name = f'sst-{store_id}-certificate-{timestamp1}'
         print(certificate_name)
         list_domain, certis = domain_list(domain, certificate_name)
         print("domain_list",list_domain)
@@ -94,7 +107,7 @@ async def sst_create(request: Request):
 
 @router.post("/my-update")
 async def update(request:Request):
-
+    timestamp1= round(time.time()*1000)
     payload_bytes = await request.body()
     print(payload_bytes)
     payload_str = payload_bytes.decode("utf-8")
@@ -139,6 +152,7 @@ async def update(request:Request):
     preview_service_name="sst-"+str(store_id)+"-preview"
     # Container config given and update
     if container_config!=None:
+        timestamp1= round(time.time()*1000)
         store_id=queryParams.get('store_id')
         # #region=str(json_data['region'])
         domain=str(json_data['domain'])
@@ -234,6 +248,7 @@ async def update(request:Request):
 
 # Domain not given and update
     if domain_datastore == 'None' and domain != None:
+        timestamp1= round(time.time()*1000)
         store_id=queryParams.get('store_id')
         region=str(json_data['region'])
         container_config=str(json_data['container_config'])
@@ -282,13 +297,23 @@ async def update(request:Request):
 
 # Domain given and update
     elif domain_datastore!= 'None' and domain!=None:
+        timestamp1= round(time.time()*1000)
+
+        print('I am in Domain given and update section')
         store_id=queryParams.get('store_id')
         region=str(json_data['region'])
         container_config=str(json_data['container_config'])
         preview_tagging_server_url=str(json_data['preview_tagging_server_url'])
-        tagging_server_url = str(json_data['tagging_server-url'])
-        
+        tagging_server_url = str(json_data['tagging_server_url'])
         domain = queryParams.get('domain')
+        domain_old = str(json_data['domain'])
+
+        #datastore use for update domain
+        kind_update = 'server-side-tagging-update-domain'
+        parent_key=None
+        custom_key_update = client.key(kind_update,str(store_id),parent=parent_key)
+        entity_update = datastore.Entity(key=custom_key_update)
+
         certificate_name = f'sst-{store_id}-certificate-{timestamp1}'
         print(certificate_name)
         list_domain, certis = domain_list(domain, certificate_name)
@@ -313,11 +338,25 @@ async def update(request:Request):
         client.put(entity)
         backend_create_global(backend_service_name=backend_service_name, neg_name = neg_name, neg_region=region)
         entity['backend_service_name']=backend_service_name
-        # entity['region']=region
-        # entity["container_config"]=container_config
-        entity["domain"]=domain
+        entity['store_id']=store_id
+        entity['region']=region
+        entity["container_config"]=container_config
+        entity["preview_tagging_server_url"]=preview_tagging_server_url
+        entity["tagging_server_url"]=tagging_server_url
+        entity["domain"]=domain_old
         client.put(entity)
+        entity_update['domain']=domain
+        client.put(entity_update)
         hostrule_add(domain=[domain], backend_service_name=backend_service_name, paths=["/test", "/dev", "/pre-prod"])
+        publisher = pubsub_v1.PublisherClient()
+        topic_path = publisher.topic_path(project_id,topic_name)
+
+        message_data=store_id
+        future = publisher.publish(topic_path, data=message_data.encode("utf-8"))
+        future.result()
+
+        print("Published message to Pub/Sub:", message_data)
+     
 
     else:
         print("Domain not provided")

@@ -66,10 +66,10 @@ async def batch_function ():
         try:
             print(f"Received message: {received_message.message.data}")
             store_id.append(received_message.message.data.decode('utf-8'))
-            subscriber.acknowledge(
-            subscription=subscription_path,
-            ack_ids=[received_message.ack_id],
-            )        
+            # subscriber.acknowledge(
+            # subscription=subscription_path,
+            # ack_ids=[received_message.ack_id],
+            # )        
         except Exception as e:
             print(f"Error processing or acknowledging the message: {e}")
 
@@ -148,8 +148,12 @@ async def batch_function ():
             neg_delete()
             time.sleep(10)
             print('delete neg')
-            ssl_delete(certificate_name=final_cert_name)
+            ssl_delete(certificate_name=final_cert_name[0])
             print('All items deleted sucessfully')
+            subscriber.acknowledge(
+            subscription=subscription_path,
+            ack_ids=[received_message.ack_id],
+            )     
 
 
 
@@ -160,7 +164,7 @@ async def batch_function ():
 
             print('Our code work fine')
         else:
-            print('There is something problem')
+            print('The new certificate is not Active yet ')
 
     else:
         print('Not required for delete operation because only one certificate is created')

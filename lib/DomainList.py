@@ -62,42 +62,58 @@ lb = config["gcp"]["load_balancer"]
 
 def domain_list(new_domain: str,certificate_name: str):
     # print(lb)
-    certificates = https_proxy_get(load_balancer=lb)
+    all_certificates = https_proxy_get(load_balancer=lb)
     
     dic1 = {}
     latest_certificate = None
     latest_timestamp = None
 
-    for i in certificates:
+    for i in all_certificates:
           print("start")
           max_timestamp,domains, = ssl_get_managed_domains(i)
           dic1[i]= []
           dic1[i].append(max_timestamp)
           dic1[i].append(domains)
 
+    cnt_domain=0
     for certificate, data in dic1.items():
         timestamp = data[0]
         if latest_timestamp is None or timestamp > latest_timestamp:
             latest_certificate = certificate
             latest_timestamp = timestamp
+            cnt_domain = len(data[1])
 
 # Merge domains of all previous certificates into the latest one
 
-    if latest_certificate:
+    print("latest",latest_certificate)
+    if latest_certificate and cnt_domain < 99 :
         domains_to_merge = []
         for certificate, data in dic1.items():
-            if certificate != latest_certificate:
+            if certificate != latest_certificate and len(data[1]) != 99:
                 domains_to_merge.extend(data[1])
 
         dic1[latest_certificate][1].extend(domains_to_merge)
         dic1[latest_certificate][1] = list(set(dic1[latest_certificate][1]))
 
-    new_certificate_domains= list(dic1[latest_certificate][1])
-    new_certificate_domains.append(new_domain)
-    certificates=[]
-    certificates = list(dic1.keys())
-    new_certificate = f'https://www.googleapis.com/compute/v1/projects/{project}/global/sslCertificates/{certificate_name}'.format(project,certificate_name)
-    certificates.append(new_certificate)
+        new_certificate_domains= list(dic1[latest_certificate][1])
+        new_certificate_domains.append(new_domain)
+        all_certificates=[]
+        all_certificates = list(dic1.keys())
+        new_certificate = f'https://www.googleapis.com/compute/v1/projects/{project}/global/sslCertificates/{certificate_name}'.format(project,certificate_name)
+        all_certificates.append(new_certificate)
+        
 
-    return new_certificate_domains, certificates
+        return new_certificate_domains, all_certificates
+    
+    else:
+        all_certificates = []
+        new_certificate = f'https://www.googleapis.com/compute/v1/projects/{project}/global/sslCertificates/{certificate_name}'.format(project,certificate_name)
+        all_certificates.append(latest_certificate)
+        all_certificates.append(new_certificate)
+
+        new_certificate_domains = []
+        new_certificate_domains.append(new_domain)
+        print('after 99 ',new_certificate_domains, all_certificates)    
+
+        return new_certificate_domains, all_certificates
 

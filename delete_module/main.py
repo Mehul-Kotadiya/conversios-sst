@@ -20,6 +20,8 @@ be_name=[]
 neg_name=[]   
 cd_certi_figer_print=[]
 cd_final_certi_list=[]
+cd_certi_name_prefix= 'https://www.googleapis.com/compute/v1/projects/server-side-tagging-392006/global/sslCertificates/'
+cd_full_url_certi=[]
 
 
 
@@ -507,89 +509,84 @@ def create_delete_batch():
 
     cd_certi_name=[]
     cd_json_certi_data=[]
-    cd_final_cert_name=[]
+    # cd_final_cert_name=[]
     cd_delete_certi_name=[]
+    cd_full_domains_certi=[]
+    cd_other_certi=[]
+    cd_final_merge_list=''
+    cd_certi_name_prefix= 'https://www.googleapis.com/compute/v1/projects/server-side-tagging-392006/global/sslCertificates/'
+    cd_full_url_certi=[]
     client = compute_v1.TargetHttpsProxiesClient()
     
     new_lb=lb
     tar_proxy=str(new_lb+proxy_name)
-    print(tar_proxy)
+
     request = compute_v1.GetTargetHttpsProxyRequest(
         project=project,
         target_https_proxy=tar_proxy
     )
     response = client.get(request=request)
-    # print('response',response)
+
     certis = response.ssl_certificates
-    if len(certis) == 2:
     
-        print('certi',len(certis))
-        
-        for c in certis:
-            parts=c.split('/')
-            cd_certi_name.append(parts[-1])
-        # print(cd_certi_name)
-        for cert in cd_certi_name:
-            get_ssl_client = compute_v1.SslCertificatesClient()
-            request = compute_v1.GetSslCertificateRequest(
-                project=project,
-                ssl_certificate=cert,
-            )
-            response = get_ssl_client.get(request=request)
-            name = response.name
-            domain_count = response.managed.domains
-            # print('certi_respnse',response.managed.)
-            certificate_data={
-                'name':name,
-                'domains':domain_count
-            }
-            cd_json_certi_data.append(certificate_data)
-
-        name1=cd_json_certi_data[0]['name']    
-        len1=len(cd_json_certi_data[0]['domains'])
-        name2=cd_json_certi_data[1]['name']  
-        len2=len(cd_json_certi_data[1]['domains'])
-
-        if len1 > len2:
-            cd_final_cert_name.append(name1)
-            cd_delete_certi_name.append(name2)
+    for c in certis:
+        parts=c.split('/')
+        cd_certi_name.append(parts[-1])
+    # print(cd_certi_name)
+    for cert in cd_certi_name:
+        get_ssl_client = compute_v1.SslCertificatesClient()
+        request = compute_v1.GetSslCertificateRequest(
+            project=project,
+            ssl_certificate=cert,
+        )
+        response = get_ssl_client.get(request=request)
+        name = response.name
+        domain_count = response.managed.domains
+        # print('certi_respnse',response.managed.)
+        certificate_data={
+            'name':name,
+            'domains':len(domain_count)
+        }
+        cd_json_certi_data.append(certificate_data)
+    print('my cd json data',cd_json_certi_data)
+    for cd in cd_json_certi_data:
+        if cd['domains'] == 99:
+            cd_full_domains_certi.append(cd['name'])
         else:
-            cd_final_cert_name.append(name2)
-            cd_delete_certi_name.append(name1)
+            cd_other_certi.append([cd['name'],cd['domains']])
 
-        cd_certi_1=name1+'-'+str(len1)
-        cd_certi_2=name2+'-'+str(len2)
-        print('certi_with_more domain',cd_final_cert_name)
 
-    
-        create_delete_https_proxy_get(certi_name=cd_final_cert_name[0])
-        create_delete_patch_lb_front_end()
+
+
+    if len(cd_other_certi) >=2:
+        # print('full domain',cd_full_domains_certi)
+        # print('other than full',max(cd_other_certi)[0])
+        cd_final_merge_list=cd_full_domains_certi+[max(cd_other_certi)[0]]
+        cd_delete_certi_name.append(min(cd_other_certi)[0])
+        # print('delete certiname',cd_delete_certi_name)
+
+        for final in cd_final_merge_list:
+            cd_full_url_certi.append(cd_certi_name_prefix+final)
+            
+
+
+        
+        finger_print=create_delete_https_proxy_get()
+        create_delete_patch_lb_front_end(certilist=cd_full_url_certi,fingerprint=finger_print[0])
+
+        time.sleep(5)
         create_delete_ssl_delete(certificate_name=cd_delete_certi_name[0])
+    
 
     else:
         print('There is no new certificate is create')
 
 
 
-        # cd_certificate_data=[]
-        # client = compute_v1.SslCertificatesClient()
-        # ssl_certificates = client.list(project=project)
-        # # print(ssl_certificates)
-            
-        
+    return 'Function run well'
 
-        # for cert in ssl_certificates:
-
-        #         certificate_data = {
-        #             'name': cert.name,
-        #             'status': cert.managed.status,
-        #             'create_time': cert.creation_timestamp,
-        #         }
-        #         cd_certificate_data.append(certificate_data)
-        # print(cd_certificate_data)
-        return 'Function run well'
-
-def create_delete_https_proxy_get(certi_name:str):
+def create_delete_https_proxy_get():
+    print('i am proxy get under')
 
     client = compute_v1.TargetHttpsProxiesClient()
     
@@ -602,27 +599,24 @@ def create_delete_https_proxy_get(certi_name:str):
     )
     # Make the request
     response = client.get(request=request)
-    print('whole_response',response)
+    # print('whole_response',response)
     certis = response.ssl_certificates
     cd_certi_figer_print.append(response.fingerprint)
-    print('certi name',certi_name)
-    for cert in certis:
-        if certi_name in cert:
-            cd_final_certi_list.append(cert)
-    print('final_certi_name',cd_final_certi_list)
-    return certis
+   
+    return cd_certi_figer_print
 
 
-def create_delete_patch_lb_front_end():
+def create_delete_patch_lb_front_end(certilist:list,fingerprint:str):
+    print('i am under patch function')
     client = compute_v1.TargetHttpsProxiesClient()
     request_body={
         # "creation_timestamp": "2023-11-07T19:31:29.652-08:00",
-        "fingerprint": cd_certi_figer_print[0],
+        "fingerprint": fingerprint,
         # "id": 5701903430321618942,
         # "kind": "compute#targetHttpsProxy",
         # "name": "server-side-test-lb-target-proxy-2",
         # "quic_override": "NONE",
-        "ssl_certificates" :cd_final_certi_list
+        "ssl_certificates" :certilist
         # [ 'https://www.googleapis.com/compute/v1/projects/tatvic-gcp-dev-team/global/sslCertificates/server-side-tagging-testing-certi2'],
         # "url_map": "https://www.googleapis.com/compute/v1/projects/tatvic-gcp-dev-team/global/urlMaps/server-side-test-lb"
 
@@ -635,21 +629,22 @@ def create_delete_patch_lb_front_end():
         target_https_proxy_resource=request_body    
     )
     response = client.patch(request=request)
+    print(response)
     return response
 
 def create_delete_ssl_delete(certificate_name):
     client = compute_v1.SslCertificatesClient()
-    print(1)
+    
 
     request = compute_v1.DeleteSslCertificateRequest(
         project= project,
         ssl_certificate= certificate_name
     )
-    print(2)
+   
     try:
         # Make the delete request
         response = client.delete(request=request)
         print(response)
-        print('deleted succesfully')
+        print('certificate '+certificate_name +' deleted succesfully')
     except Exception as e:
         print(f"An error occurred: {e}")

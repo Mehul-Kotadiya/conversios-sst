@@ -55,26 +55,17 @@ subscriber = pubsub_v1.SubscriberClient()
 
 @app.get("/")
 async def batch_function ():
-    exit()
     config = configparser.ConfigParser()
     config.read('config.ini')
-    # ssl_delete(certificate_name='sst-10002-certificate-1700123575381')
-    # exit()
-
     subscription_path = subscriber.subscription_path(project, subscription_name)
 
     num_messages = 1
-
     response = subscriber.pull(subscription=subscription_path, max_messages=num_messages)
 
     for received_message in response.received_messages:
         try:
             print(f"Received message: {received_message.message.data}")
-            store_id.append(received_message.message.data.decode('utf-8'))
-            # subscriber.acknowledge(
-            # subscription=subscription_path,
-            # ack_ids=[received_message.ack_id],
-            # )        
+            store_id.append(received_message.message.data.decode('utf-8'))     
         except Exception as e:
             print(f"Error processing or acknowledging the message: {e}")
 
@@ -132,7 +123,7 @@ async def batch_function ():
         print('status check',final_status_check_cert)
         
         certi_status = get_ssl_certi(certificate_name=final_status_check_cert[0])
-        if certi_status == 'PROVISIONING':
+        if certi_status == 'Active':
             https_proxy_get(load_balancer=lb)
             print('get proxy')
             patch_lb_front_end(load_balancer=lb)
@@ -144,13 +135,15 @@ async def batch_function ():
             get_backend_service()
             print('get backend')
             time.sleep(10)
-            backend_delete(backend_service_name=be_name[0])
+            backend_delete(backend_service_name=
+                           [0])
             time.sleep(10)
             print('delete backend')
             get_neg_list()
             time.sleep(10)
             print('get neg')
-            neg_delete()
+            
+            ()
             time.sleep(10)
             print('delete neg')
             ssl_delete(certificate_name=final_cert_name[0])
@@ -530,6 +523,7 @@ def create_delete_batch():
     certis = response.ssl_certificates
     
     for c in certis:
+
         parts=c.split('/')
         cd_certi_name.append(parts[-1])
     # print(cd_certi_name)

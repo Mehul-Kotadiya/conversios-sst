@@ -8,12 +8,13 @@ store_id=[]
 subscription_name='server-side-tagging-sub'
 datastore_client = datastore.Client()
 
+
 publisher = pubsub_v1.PublisherClient()
 subscriber = pubsub_v1.SubscriberClient()
 topic_path = publisher.topic_path(project_id,topic_name)
-message_data='12121'
-future = publisher.publish(topic_path, data=message_data.encode("utf-8"))
-future.result()
+# message_data='12121'
+# future = publisher.publish(topic_path, data=message_data.encode("utf-8"))
+# future.result()
 
 # print("Published message to Pub/Sub:", message_data)
 
@@ -42,7 +43,13 @@ future.result()
 
 
 
-
-l1=[12,10,9,11,12,99,78,65]
-maxof=max(l1)
-print(maxof)
+list_domain= ['finallogic.com', '99test.com', '2logic.com', '99logic.com', '3logic.com']
+print(list_domain)
+old_domain='99test.com'
+for d in list_domain:
+    if old_domain == d:
+        list_domain.remove(d)
+    else:
+        print('This is not update request')
+list_domain.append('100.com')
+print(list_domain)

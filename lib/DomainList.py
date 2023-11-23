@@ -87,12 +87,12 @@ def domain_list(new_domain: str,certificate_name: str):
 
     print("latest",latest_certificate)
     if latest_certificate and cnt_domain < 99 :
-        domains_to_merge = []
-        for certificate, data in dic1.items():
-            if certificate != latest_certificate and len(data[1]) != 99:
-                domains_to_merge.extend(data[1])
+        # domains_to_merge = []
+        # for certificate, data in dic1.items():
+        #     if certificate != latest_certificate and len(data[1]) != 99:
+        #         domains_to_merge.extend(data[1])
 
-        dic1[latest_certificate][1].extend(domains_to_merge)
+        # dic1[latest_certificate][1].extend(domains_to_merge)
         dic1[latest_certificate][1] = list(set(dic1[latest_certificate][1]))
 
         new_certificate_domains= list(dic1[latest_certificate][1])

@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 from google.cloud import datastore
 import time
+import DomainList
 project_id = 'server-side-tagging-392006'
 
 
@@ -502,80 +503,24 @@ def ssl_delete(certificate_name):
     except Exception as e:
         print(f"An error occurred: {e}")
 
-
 @app.get("/create-delete")
 
 def create_delete_batch():
 
-    cd_certi_name=[]
-    cd_json_certi_data=[]
-    # cd_final_cert_name=[]
-    cd_delete_certi_name=[]
-    cd_full_domains_certi=[]
-    cd_other_certi=[]
-    cd_final_merge_list=''
-    cd_certi_name_prefix= 'https://www.googleapis.com/compute/v1/projects/server-side-tagging-392006/global/sslCertificates/'
-    cd_full_url_certi=[]
-    client = compute_v1.TargetHttpsProxiesClient()
-    
-    new_lb=lb
-    tar_proxy=str(new_lb+proxy_name)
+    full_url_certi = []
+    certificate_99,latest_certificate,remaining_certificate = DomainList.domain_list()
+    full_url_certi.append(certificate_99)
+    full_url_certi.append(latest_certificate)
 
-    request = compute_v1.GetTargetHttpsProxyRequest(
-        project=project,
-        target_https_proxy=tar_proxy
-    )
-    response = client.get(request=request)
-
-    certis = response.ssl_certificates
-    
-    for c in certis:
-        parts=c.split('/')
-        cd_certi_name.append(parts[-1])
-    # print(cd_certi_name)
-    for cert in cd_certi_name:
-        get_ssl_client = compute_v1.SslCertificatesClient()
-        request = compute_v1.GetSslCertificateRequest(
-            project=project,
-            ssl_certificate=cert,
-        )
-        response = get_ssl_client.get(request=request)
-        name = response.name
-        domain_count = response.managed.domains
-        # print('certi_respnse',response.managed.)
-        certificate_data={
-            'name':name,
-            'domains':len(domain_count)
-        }
-        cd_json_certi_data.append(certificate_data)
-    print('my cd json data',cd_json_certi_data)
-    for cd in cd_json_certi_data:
-        if cd['domains'] == 99:
-            cd_full_domains_certi.append(cd['name'])
-        else:
-            cd_other_certi.append([cd['name'],cd['domains']])
-
-
-
-
-    if len(cd_other_certi) >=2:
-        # print('full domain',cd_full_domains_certi)
-        # print('other than full',max(cd_other_certi)[0])
-        cd_final_merge_list=cd_full_domains_certi+[max(cd_other_certi)[0]]
-        cd_delete_certi_name.append(min(cd_other_certi)[0])
-        # print('delete certiname',cd_delete_certi_name)
-
-        for final in cd_final_merge_list:
-            cd_full_url_certi.append(cd_certi_name_prefix+final)
-            
-
-
-        
+    if latest_certificate :
+       
         finger_print=create_delete_https_proxy_get()
-        create_delete_patch_lb_front_end(certilist=cd_full_url_certi,fingerprint=finger_print[0])
-
-        time.sleep(5)
-        create_delete_ssl_delete(certificate_name=cd_delete_certi_name[0])
+        create_delete_patch_lb_front_end(certilist=full_url_certi,fingerprint=finger_print[0])
+        print('delete certi',remaining_certificate)
+        
+        time.sleep(10)
+        for i in remaining_certificate:
+            create_delete_ssl_delete(certificate_name=remaining_certificate[i].split("/")[-1])
     
 
     else:

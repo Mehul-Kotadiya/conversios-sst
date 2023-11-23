@@ -87,29 +87,64 @@ def domain_list(new_domain: str,certificate_name: str):
             latest_timestamp = timestamp
             cnt_domain = len(data[1])
 
+    
+    certificate_99 = None
+    for certificate, data in dic1.items():
+        each_cnt_domain = len(data[1])
+        if  certificate_99 is None or each_cnt_domain == 99:
+            certificate_99 = certificate
+
+    remaining_certificate = []
+    remaining_certificate = list(dic1.keys())
+    remaining_certificate.remove(certificate_99)
+    remaining_certificate.remove(latest_certificate)
+
+    print(remaining_certificate)
+    
+    # print(certificate_99,latest_certificate)
+    exit()
+
+    # second_timestamp= None
+    # second_certificate = None
+
+    # for certificate, data in dic1.items():
+    #     timestamp2 = data[0]
+    #     if timestamp2 != latest_timestamp:
+
+    #         if second_timestamp is None or  timestamp2 > second_timestamp  :
+    #                 second_certificate = certificate
+    #                 second_timestamp = timestamp2
+
+    
 
 # Merge domains of all previous all_certificates into the latest one
+
     print("latest",latest_certificate)
     if latest_certificate and cnt_domain < 99 :
         
-        domains_to_merge = []
-        for certificate, data in dic1.items() :
-            if certificate != latest_certificate  and len(data[1]) != 99:
+        # domains_to_merge = []
+        # for certificate, data in dic1.items() :
+        #     timestamp = data[0]
+        #     if certificate != latest_certificate  and len(data[1]) != 99 :
              
-                domains_to_merge.extend(data[1])
+        #         domains_to_merge.extend(data[1])
                 
        
-        dic1[latest_certificate][1].extend(domains_to_merge)
+        # dic1[latest_certificate][1].extend(domains_to_merge)
+
         dic1[latest_certificate][1] = list(set(dic1[latest_certificate][1]))
 
         new_certificate_domains= list(dic1[latest_certificate][1])
         new_certificate_domains.append(new_domain)
+
+        print(new_certificate_domains)
+        
         all_certificates=[]
         all_certificates = list(dic1.keys())
         new_certificate = f'https://www.googleapis.com/compute/v1/projects/{project}/global/sslCertificates/{certificate_name}'.format(project,certificate_name)
         all_certificates.append(new_certificate)
         
-        print(new_certificate_domains)
+        
 
         return new_certificate_domains, all_certificates
     

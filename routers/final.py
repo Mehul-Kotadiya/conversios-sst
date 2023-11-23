@@ -318,6 +318,12 @@ async def update(request:Request):
         print(certificate_name)
         list_domain, certis = domain_list(domain, certificate_name)
         print("domain_list",list_domain)
+        for d in list_domain:
+            if domain_old ==d:
+                list_domain.remove(d)
+            else:
+                print('This is not update request')
+        list_domain.append(domain)
         ssl_create_managed(certificate_name=certificate_name, domains=list_domain)
         print("SSL certificate create successfully")
         entity['certificate_name']=certificate_name

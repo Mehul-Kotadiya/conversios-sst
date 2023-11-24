@@ -307,6 +307,7 @@ async def update(request:Request):
         tagging_server_url = str(json_data['tagging_server_url'])
         domain = queryParams.get('domain')
         domain_old = str(json_data['domain'])
+        print('old domain',domain_old)
 
         #datastore use for update domain
         kind_update = 'server-side-tagging-update-domain'
@@ -323,7 +324,8 @@ async def update(request:Request):
                 list_domain.remove(d)
             else:
                 print('This is not update request')
-        list_domain.append(domain)
+        # list_domain.append(domain)
+        print('final domain list',list_domain)
         ssl_create_managed(certificate_name=certificate_name, domains=list_domain)
         print("SSL certificate create successfully")
         entity['certificate_name']=certificate_name

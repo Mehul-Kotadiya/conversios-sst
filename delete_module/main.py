@@ -511,20 +511,26 @@ def create_delete_batch():
     certificate_99,latest_certificate,remaining_certificate = DomainList.domain_list()
     full_url_certi.append(certificate_99)
     full_url_certi.append(latest_certificate)
-
-    if latest_certificate :
-       
-        finger_print=create_delete_https_proxy_get()
-        create_delete_patch_lb_front_end(certilist=full_url_certi,fingerprint=finger_print[0])
-        print('delete certi',remaining_certificate)
+    certi_status = get_ssl_certi(latest_certificate.split("/")[-1])
+    print(certi_status)
+    try:
+        if certi_status == 'PROVISIONING' :
         
-        time.sleep(10)
-        for i in remaining_certificate:
-            create_delete_ssl_delete(certificate_name=remaining_certificate[i].split("/")[-1])
-    
+            finger_print=create_delete_https_proxy_get()
+            create_delete_patch_lb_front_end(certilist=full_url_certi,fingerprint=finger_print[0])     
+            time.sleep(10)
+            for i in remaining_certificate:
+                print(i)
+                certificate_name=i.split("/")[-1]
+                create_delete_ssl_delete(certificate_name)
+                print('delete certi',remaining_certificate)
 
-    else:
-        print('There is no new certificate is create')
+        else:
+            print('There is no new certificate is create')
+    except Exception as e:
+        print(e)
+
+
 
 
 

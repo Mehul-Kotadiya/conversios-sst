@@ -53,7 +53,7 @@ project = "server-side-tagging-392006"
 subscription_name='server-side-tagging-topic-sub'
 subscriber = pubsub_v1.SubscriberClient()
 
-@app.get("/batch_delete")
+@app.get("/update_delete")
 async def batch_function ():
 
     
@@ -139,7 +139,7 @@ async def batch_function ():
 
 ''' Delete the perivous certificate'''
 
-@app.get("/create-delete")
+@app.get("/create_delete")
 
 def create_delete_batch():
 

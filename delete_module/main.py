@@ -93,11 +93,11 @@ async def batch_function ():
             print(certi_status)
             
             if certi_status == 'PROVISIONING':
-                finger_print=https_proxy_get(load_balancer=lb)
-                print('get proxy')
-                patch_lb_front_end(load_balancer=lb,fingerprint=finger_print[0])
-                print('update proxy')
-                time.sleep(5)
+                # finger_print=https_proxy_get(load_balancer=lb)
+                print('get proxy part skip')
+                # patch_lb_front_end(load_balancer=lb,fingerprint=finger_print[0])
+                print('update proxy part skip')
+                # time.sleep(5)
                 
                 
                 urlmap_get(lb=lb) #give static lb name
@@ -116,7 +116,8 @@ async def batch_function ():
                 neg_delete()
                 time.sleep(10)
                 print('delete neg')
-                ssl_delete(certificate_name=delete_certi)
+                # ssl_delete(certificate_name=delete_certi)
+                print('delete certi part skip')
                 print('All items deleted sucessfully')
                 print("pointer",received_message)
                 # print("mid",received_message['message']['message_id'])

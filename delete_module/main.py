@@ -310,7 +310,7 @@ if __name__ == "__main__":
 
 #     certificate_name=str(json_data['certificate_name'])
 #     store_idd=str(json_data['store_id'])
-#     region=str(json_data['region'])
+    # #region=str(json_data['region'])
 #     container_config=str(json_data['container_config'])
 #     preview_tagging_server_url=str(json_data['preview_tagging_server_url'])
 #     tagging_server_url = str(json_data['tagging_server_url'])
@@ -441,12 +441,12 @@ if __name__ == "__main__":
 #         "region":task.get('region'),
 #     }
 
-#     region=str(json_data['region'])
+#     #region=str(json_data['region'])
 
 #     # Initialize request argument(s)
 #     request = compute_v1.ListRegionNetworkEndpointGroupsRequest(
 #         project=project,
-#         region=region,
+#         #region=region,
 #     )
 
 #     # Make the request
@@ -481,7 +481,7 @@ if __name__ == "__main__":
 #         "region":task.get('region'),
 #     }
 
-#     region=str(json_data['region'])
+#     #region=str(json_data['region'])
     
 
 #     # #region="us-central1" #get from datastore
@@ -493,7 +493,7 @@ if __name__ == "__main__":
 #         network_endpoint_group=neg_name[0],
 #         # network_endpoint_group='sst-13241-neg-1700030259258',
 #         project=project,
-#         region=region
+#         #region=region
 #         )
 #     response = client.delete(request=request)
 #     print(response)

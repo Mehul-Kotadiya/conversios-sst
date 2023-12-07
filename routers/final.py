@@ -88,7 +88,7 @@ async def sst_create(request: Request):
 
     
     certi_status=latest_certi_find()
-    if certi_status == 'Active':
+    if certi_status == 'PROVISIONING':
     # payload_bytes = await request.body()
     # print(payload_bytes)
     # payload_str = payload_bytes.decode("utf-8")
@@ -222,7 +222,7 @@ async def update(request:Request):
     # print(queryParams)
 
     certi_status=latest_certi_find()
-    if certi_status == 'Active':
+    if certi_status == 'PROVISIONING':
         up_kind = 'update_request_queue'
         up_data=client.query(kind=up_kind)
         up_entities = list(up_data.fetch())
@@ -570,11 +570,11 @@ async def update(request:Request):
     return "Sucessfully updated"
 
 
-def generate_random_string(length):
-    characters = string.ascii_letters + string.digits  # Define the characters to include
-    r1 = ''.join(random.choice(characters) for _ in range(length))
-    random_string=r1.lower()
-    return random_string
+# def generate_random_string(length):
+#     characters = string.ascii_letters + string.digits  # Define the characters to include
+#     r1 = ''.join(random.choice(characters) for _ in range(length))
+#     random_string=r1.lower()
+#     return random_string
 
 
 def latest_certi_find():

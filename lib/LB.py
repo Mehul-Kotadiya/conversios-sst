@@ -216,4 +216,27 @@ def hostrule_add(domain: list, backend_service_name: str, paths: list = ["/test"
 # x = https_proxy_attach_ssl_certificate()
 # print(x)
 
+def update_routing_rule(new_host,old_host):
+    project = config["gcp"]["project_id"]
+    lb = config["gcp"]["load_balancer"]
+    updated_host = new_host  # Replace with the new host value
+
+    client = compute_v1.UrlMapsClient()
+
+    urlmap = client.get(project=project, url_map=lb)
+    print(urlmap)
+    print('------------------------------------------------------')
+
+    for url in urlmap.host_rules:
+        
+        if url.hosts == [old_host]:
+            url.hosts = [updated_host]
+
+    print(urlmap)
+
+    response = client.patch(project=project, url_map=lb, url_map_resource=urlmap)
+
+
+    return response
+
 

@@ -203,7 +203,7 @@ async def sst_create(request: Request):
         print('Request is under process')
             
 
-    return {"Payload Details": details}
+    return {"Payload Details Store to Datastore"}
 
 @router.get("/my-update")
 async def update(request:Request):
@@ -588,7 +588,7 @@ async def update(request:Request):
 
 def latest_certi_find():
     all_certificates = https_proxy_get(load_balancer=lb)
-    print('https proxy get sucessfully run')
+    # print('https proxy get sucessfully run')
     
     dic1 = {}
     latest_certificate = None
@@ -597,7 +597,7 @@ def latest_certi_find():
     for i in all_certificates:
         #   print("start")
           max_timestamp,domains, = ssl_get_managed_domains(i)
-          print('all atteched domain found')
+        #   print('all atteched domain found')
           dic1[i]= []
           dic1[i].append(max_timestamp)
           dic1[i].append(domains)

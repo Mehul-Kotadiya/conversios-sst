@@ -88,6 +88,7 @@ async def sst_create(request: Request):
 
     
     certi_status=latest_certi_find()
+    print(certi_status)
     if certi_status == 'PROVISIONING':
     # payload_bytes = await request.body()
     # print(payload_bytes)
@@ -108,98 +109,98 @@ async def sst_create(request: Request):
                 'domain':e['domain'],
 
             }
-            entry_list.append(min_time)
-            if entry_list != []:
+        entry_list.append(min_time)
+        if entry_list != []:
 
-                min_time_entry = min(entry_list, key=lambda x: x['time'])
-                if min_time_entry['store_id'] != 'null' and min_time_entry['store_id'] != '' and min_time_entry['store_id'] != None:
-                    store_id=min_time_entry['store_id']
-                    region=min_time_entry['region']
-                    domain=min_time_entry['domain']
-                    container_config=min_time_entry['container_config']
-                # else:
-                #     print('its dummy entry')
+            min_time_entry = min(entry_list, key=lambda x: x['time'])
+            if min_time_entry['store_id'] != 'null' and min_time_entry['store_id'] != '' and min_time_entry['store_id'] != None:
+                store_id=min_time_entry['store_id']
+                region=min_time_entry['region']
+                domain=min_time_entry['domain']
+                container_config=min_time_entry['container_config']
+            # else:
+            #     print('its dummy entry')
 
-                #datastore part
-                    kind = 'server-side-tagging'
-                    # parent_key=None
-                    custom_key = client.key(kind,str(store_id))
-                    entity = datastore.Entity(key=custom_key)
-                    print("name", type(store_id))
-                    print("region", type(region))
-                    print("container_config", type(container_config))
+            #datastore part
+                kind = 'server-side-tagging'
+                # parent_key=None
+                custom_key = client.key(kind,str(store_id))
+                entity = datastore.Entity(key=custom_key)
+                print("name", type(store_id))
+                print("region", type(region))
+                print("container_config", type(container_config))
 
 
 
-                    # entity["name"]=store_id
-                    # entity['region']=region
-                    # entity['domain']=domain
-                    # entity['container_config']=container_config
-                    # client.put(entity)
-                    
+                # entity["name"]=store_id
+                # entity['region']=region
+                # entity['domain']=domain
+                # entity['container_config']=container_config
+                # client.put(entity)
+                
 
-                    print("name", store_id)
-                    print("region", region)
-                    print("container_config", container_config)
-                    
+                print("name", store_id)
+                print("region", region)
+                print("container_config", container_config)
+                exit()
 
-                    preview_server_url, preview_name = await create_service_preview_tagging(store_id, region, container_config)
-                    sample_set_iam_policy(preview_name)
-                    print('preview-created')
-                    result1, tagging_name, details = await create_service_tagging(store_id, region, container_config, preview_server_url)
-                    sample_set_iam_policy(tagging_name)
-                    print('all-created')
-                    delete_entry = client.key(cr_kind,store_id)
-                    client.delete(delete_entry)
+                preview_server_url, preview_name = await create_service_preview_tagging(store_id, region, container_config)
+                sample_set_iam_policy(preview_name)
+                print('preview-created')
+                result1, tagging_name, details = await create_service_tagging(store_id, region, container_config, preview_server_url)
+                sample_set_iam_policy(tagging_name)
+                print('all-created')
+                delete_entry = client.key(cr_kind,store_id)
+                client.delete(delete_entry)
 
-                    entity["name"]=store_id
-                    entity['region']=region
-                    entity['domain']=domain
-                    entity['container_config']=container_config
-                    entity['preview_tagging_server_url']=preview_server_url
-                    entity['tagging_server_url']=result1
+                entity["name"]=store_id
+                entity['region']=region
+                entity['domain']=domain
+                entity['container_config']=container_config
+                entity['preview_tagging_server_url']=preview_server_url
+                entity['tagging_server_url']=result1
+                client.put(entity)
+            
+
+            
+
+                if domain!= None:
+                    certificate_name = f'sst-{store_id}-certificate-{timestamp1}'
+                    print(certificate_name)
+                    list_domain, certis = domain_list(domain, certificate_name)
+                    print("domain_list",list_domain)
+                    ssl_create_managed(certificate_name=certificate_name, domains=list_domain)
+                    print("SSL certificate create successfully")
+                    entity['certificate_name']=certificate_name
                     client.put(entity)
-                
+                    # Function to check state of newly created certificate to be added
+                    https_proxy_attach_ssl_certificate(certificate_urls=certis)
+                    # Works till here Rev: test-backend-sst-lb-00018-lrx #
 
-                
-
-                    if domain!= None:
-                        certificate_name = f'sst-{store_id}-certificate-{timestamp1}'
-                        print(certificate_name)
-                        list_domain, certis = domain_list(domain, certificate_name)
-                        print("domain_list",list_domain)
-                        ssl_create_managed(certificate_name=certificate_name, domains=list_domain)
-                        print("SSL certificate create successfully")
-                        entity['certificate_name']=certificate_name
-                        client.put(entity)
-                        # Function to check state of newly created certificate to be added
-                        https_proxy_attach_ssl_certificate(certificate_urls=certis)
-                        # Works till here Rev: test-backend-sst-lb-00018-lrx #
-
-                        # Latest revision additions Rev: test-backend-sst-lb-00019
-                        cloud_run_name = f"sst-{store_id}"
-                        backend_service_name = f"sst-{store_id}-be-{timestamp1}"
-                        neg_name = f"sst-{store_id}-neg-{timestamp1}"
-                        print(json.dumps({"cloud_run_name": cloud_run_name, "backend_service_name": backend_service_name, "neg_name": neg_name}))
-                        
-                        neg_create_regional_cloud_run(region=region, neg_name=neg_name, cloud_run_service_name= cloud_run_name)
-                        entity['neg_name']=neg_name
-                        client.put(entity)
-                        backend_create_global(backend_service_name=backend_service_name, neg_name = neg_name, neg_region=region)
-                        entity['backend_service_name']=backend_service_name
-                        client.put(entity)
-                        hostrule_add(domain=[domain], backend_service_name=backend_service_name, paths=["/test", "/dev", "/pre-prod"])
-                    else:
-                        print('Domain not provided')
-
+                    # Latest revision additions Rev: test-backend-sst-lb-00019
+                    cloud_run_name = f"sst-{store_id}"
+                    backend_service_name = f"sst-{store_id}-be-{timestamp1}"
+                    neg_name = f"sst-{store_id}-neg-{timestamp1}"
+                    print(json.dumps({"cloud_run_name": cloud_run_name, "backend_service_name": backend_service_name, "neg_name": neg_name}))
+                    
+                    neg_create_regional_cloud_run(region=region, neg_name=neg_name, cloud_run_service_name= cloud_run_name)
+                    entity['neg_name']=neg_name
+                    client.put(entity)
+                    backend_create_global(backend_service_name=backend_service_name, neg_name = neg_name, neg_region=region)
+                    entity['backend_service_name']=backend_service_name
+                    client.put(entity)
+                    hostrule_add(domain=[domain], backend_service_name=backend_service_name, paths=["/test", "/dev", "/pre-prod"])
                 else:
-                    print('Store id is Null')
+                    print('Domain not provided')
 
             else:
-                print('Datastore in to create request')
+                print('Store id is Null')
 
         else:
-            print('Request is under process')
+            print('Datastore in to create request')
+
+    else:
+        print('Request is under process')
             
 
     return {"Payload Details": details}

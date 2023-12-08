@@ -23,7 +23,7 @@ def https_proxy_get(load_balancer: str):
     )
     # Make the request
     response = client.get(request=request)
-    print('re',response)
+    # print('re',response)
     certis = response.ssl_certificates
     return certis
 

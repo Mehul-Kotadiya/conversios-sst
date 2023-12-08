@@ -142,7 +142,7 @@ async def sst_create(request: Request):
                 print("name", store_id)
                 print("region", region)
                 print("container_config", container_config)
-                exit()
+               
 
                 preview_server_url, preview_name = await create_service_preview_tagging(store_id, region, container_config)
                 sample_set_iam_policy(preview_name)

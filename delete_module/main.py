@@ -168,7 +168,7 @@ def create_delete_batch():
 
 
         else:
-            print('There is no new certificate is create')
+            return 'There is no new certificate is create'
     except Exception as e:
         print(e)
 

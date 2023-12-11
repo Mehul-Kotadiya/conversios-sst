@@ -224,15 +224,10 @@ def update_routing_rule(new_host,old_host):
     client = compute_v1.UrlMapsClient()
 
     urlmap = client.get(project=project, url_map=lb)
-    print(urlmap)
-    print('------------------------------------------------------')
-
     for url in urlmap.host_rules:
         
         if url.hosts == [old_host]:
             url.hosts = [updated_host]
-
-    print(urlmap)
 
     response = client.patch(project=project, url_map=lb, url_map_resource=urlmap)
 

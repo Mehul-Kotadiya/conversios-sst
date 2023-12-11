@@ -45,3 +45,4 @@ app.include_router(final.router,prefix='/sst',tags=['SSTmain'])
 if __name__ == "__main__":
     uvicorn.run("main:app", host="127.0.0.2", port=8080, reload=True)
 
+#8080

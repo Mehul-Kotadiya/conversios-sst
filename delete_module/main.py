@@ -154,18 +154,18 @@ def create_delete_batch():
     full_url_certi.append(certificate_99)
     full_url_certi.append(latest_certificate)
     certi_status = get_ssl_certi(latest_certificate.split("/")[-1])
-    print(certi_status)
     try:
         if certi_status == 'PROVISIONING' :
         
             finger_print=create_delete_https_proxy_get()
+            #Patch request on Loadbalancer with updated certificate
             create_delete_patch_lb_front_end(certilist=full_url_certi,fingerprint=finger_print[0])     
             time.sleep(10)
             for i in remaining_certificate:
-                print(i)
                 certificate_name=i.split("/")[-1]
+                #Delete non-required certificate
                 create_delete_ssl_delete(certificate_name)
-                print('delete certi',remaining_certificate)
+
 
         else:
             print('There is no new certificate is create')
@@ -175,20 +175,15 @@ def create_delete_batch():
     return 'Function run well'
 
 def create_delete_https_proxy_get():
-    print('i am proxy get under')
-
     client = compute_v1.TargetHttpsProxiesClient()
-    
     new_lb = lb
     tar_proxy=str(new_lb+proxy_name)
-    # print("check",new_lb)
     request = compute_v1.GetTargetHttpsProxyRequest(
         project=project,
         target_https_proxy=tar_proxy,
     )
     # Make the request
     response = client.get(request=request)
-    # print('whole_response',response)
     certis = response.ssl_certificates
     cd_certi_figer_print.append(response.fingerprint)
    
@@ -196,19 +191,10 @@ def create_delete_https_proxy_get():
 
 
 def create_delete_patch_lb_front_end(certilist:list,fingerprint:str):
-    print('i am under patch function')
     client = compute_v1.TargetHttpsProxiesClient()
     request_body={
-        # "creation_timestamp": "2023-11-07T19:31:29.652-08:00",
         "fingerprint": fingerprint,
-        # "id": 5701903430321618942,
-        # "kind": "compute#targetHttpsProxy",
-        # "name": "server-side-test-lb-target-proxy-2",
-        # "quic_override": "NONE",
         "ssl_certificates" :certilist
-        # [ 'https://www.googleapis.com/compute/v1/projects/tatvic-gcp-dev-team/global/sslCertificates/server-side-tagging-testing-certi2'],
-        # "url_map": "https://www.googleapis.com/compute/v1/projects/tatvic-gcp-dev-team/global/urlMaps/server-side-test-lb"
-
     }
     new_lb =lb   
     tar_proxy=str(new_lb+proxy_name)
@@ -218,13 +204,10 @@ def create_delete_patch_lb_front_end(certilist:list,fingerprint:str):
         target_https_proxy_resource=request_body    
     )
     response = client.patch(request=request)
-    print(response)
     return response
 
 def create_delete_ssl_delete(certificate_name):
     client = compute_v1.SslCertificatesClient()
-    
-
     request = compute_v1.DeleteSslCertificateRequest(
         project= project,
         ssl_certificate= certificate_name
@@ -233,291 +216,13 @@ def create_delete_ssl_delete(certificate_name):
     try:
         # Make the delete request
         response = client.delete(request=request)
-        print(response)
         print('certificate '+certificate_name +' deleted succesfully')
     except Exception as e:
         print(f"An error occurred: {e}")
 
 
-
 if __name__ == "__main__":
     uvicorn.run("main:app", host="127.0.0.2", port=8080, reload=True)
-#
-#Loadbalancer get
-# def https_proxy_get(load_balancer: str):
- 
-#     client = compute_v1.TargetHttpsProxiesClient()
-#     new_lb = load_balancer
-#     tar_proxy=str(new_lb+proxy_name)
-#     # print("check",new_lb)
-#     request = compute_v1.GetTargetHttpsProxyRequest(
-#         project=project,
-#         target_https_proxy=tar_proxy,
-#     )
-#     # Make the request
-#     response = client.get(request=request)
-#     print('whole_response',response)
-#     # certis = response.ssl_certificates
-#     certi_fingerprint.append(response.fingerprint)
-#     return certi_fingerprint
-
-
-# def patch_lb_front_end(load_balancer:str,fingerprint:str):
-#     client = compute_v1.TargetHttpsProxiesClient()
-#     request_body={
-#         "fingerprint": fingerprint,
-#         "ssl_certificates" :patch_require_certi
-#     }
-#     new_lb = load_balancer   
-#     tar_proxy=str(new_lb+proxy_name)
-#     request = compute_v1.PatchTargetHttpsProxyRequest(
-#         project=project,
-#         target_https_proxy=tar_proxy,
-#         target_https_proxy_resource=request_body    
-#     )
-#     response = client.patch(request=request)
-#     return response
-
-
-# def urlmap_get(lb: str):
-#     kind = 'server-side-tagging'
-#     parent_key=None
-#     print(str(store_id[0]),'------')
-#     custom_key = datastore_client.key(kind,str(store_id[0]),parent=parent_key)
-#     entity = datastore.Entity(key=custom_key)
-#     print('check urlmap updated?')
-
-
-#     task_key_updated = datastore_client.key('server-side-tagging-update-domain', str(store_id[0]))
-#     task_updated = datastore_client.get(task_key_updated)
-#     json_data_updated={
-#        "domain":task_updated.get('domain'), 
-#     }
-#     domain_updated = str(json_data_updated['domain'])
-#     task_key = datastore_client.key('server-side-tagging', str(store_id[0]))
-#     task = datastore_client.get(task_key)
-#     json_data={
-#         "certificate_name":task.get('certificate_name'),
-#         "store_id":task.get('store_id'),
-#         "region":task.get('region'),
-#         "preview_tagging_server_url":task.get('preview_tagging_server_url'),
-#         "container_config":task.get('container_config'),
-#         "tagging_server_url":task.get('tagging_server_url'),
-#         "domain":task.get('domain'),
-#         "neg_name":task.get('neg_name'),
-#         "backend_service_name":task.get('backend_service_name'),
-#     }
-
-#     certificate_name=str(json_data['certificate_name'])
-#     store_idd=str(json_data['store_id'])
-    # #region=str(json_data['region'])
-#     container_config=str(json_data['container_config'])
-#     preview_tagging_server_url=str(json_data['preview_tagging_server_url'])
-#     tagging_server_url = str(json_data['tagging_server_url'])
-#     domain = str(json_data['domain'])
-#     neg_name = str(json_data['neg_name'])
-#     backend_service_name=str(json_data['backend_service_name'])
-
-
-
-
-   
-#     client = compute_v1.UrlMapsClient()
-#     request = compute_v1.GetUrlMapRequest(
-#         project=project,  
-#         url_map=lb
-#     )
-#     response = client.get(request=request)
-#     # response.host_rules
-#     print((response.host_rules))
-#     print('--------')
-#     print(response.path_matchers)
-
-#     print("==========================")
-#     for i in response.host_rules:
-#         # print(i.hosts)
-#         if i.hosts[0] == domain:
-#             #domain not update in update part keep it old domain never update and then take from it 
-#             # print(i.path_matcher, type(i.path_matcher), sep=" >> ")
-
-#             for j in response.path_matchers:
-#                 # j.name, type(j.name)
-#                 if j.name == i.path_matcher:
-#                     response.path_matchers.remove(j)
-#             response.host_rules.remove(i)
-    
-#     print(response.host_rules) 
-#     print('---------------')   
-#     print(response.path_matchers)
-#     # Patch request using response
-#     request = compute_v1.PatchUrlMapRequest(
-#         project=project,
-#         url_map=lb,
-#         url_map_resource = response
-#     )
-#     # Make the request
-#     response = client.patch(request=request)
-#     entity["store_id"]=store_idd
-#     entity["certificate_name"]=certificate_name
-#     entity["region"]=region
-#     entity["container_config"]=container_config
-#     entity["preview_tagging_server_url"]=preview_tagging_server_url
-#     entity["tagging_server_url"]=tagging_server_url
-#     entity["domain"]=domain_updated
-#     entity["neg_name"]=neg_name
-#     entity["backend_service_name"]=backend_service_name
-#     datastore_client.put(entity)
-#     # entity["store_id"]=store_id
-#     # entity["store_id"]=store_id
-
-
-#     # Handle the response
-#     print(response)
-#     return response
-
-
-
-
-
-# def get_backend_service():
-#     json_var={}
-#     item_list=[]
-#     item_list_final=[]
-#     client = compute_v1.BackendServicesClient()
-#     request = compute_v1.ListBackendServicesRequest(
-#         # backend_service=backend_service_name,
-#         project=project,
-#     )
-#     response = client.list(request=request)
-#     items = response.items
-#     for item in items:
-#         if str(store_id[0]) in item.name:
-#             item_list.append(item.name)
-#             item_list.append(item.creation_timestamp)
-#             json_var={
-#                 "name":item.name,
-#                 "create_time":item.creation_timestamp
-#             }
-#             item_list_final.append(json_var)
-#              # print(json_var)
-#             print('------------')
-#     print(item_list_final)
-#     # print(item_list_final[0]['name'])
-#     if item_list_final[0]['create_time'] < item_list_final[1]['create_time']:
-#         certname=(item_list_final[0]['name'])
-#     else:
-#         certname=(item_list_final[1]['name'])
-#     be_name.append(certname)
-#     print(be_name)
-#     return response
-
-
-# def backend_delete(backend_service_name:str):
-#     # Create a client
-#     client = compute_v1.BackendServicesClient()
-
-#     # Initialize request argument(s)
-#     request = compute_v1.DeleteBackendServiceRequest(
-#         backend_service=backend_service_name,
-#         project=project,
-#     )
-
-#     # Make the request
-#     response = client.delete(request=request)
-#     # Handle the response
-#     print(response)
-#     return response
-
-
-# def get_neg_list():
-#     # Create a client
-#     json_var={}
-#     item_list=[]
-#     item_list_final=[]
-#     client = compute_v1.RegionNetworkEndpointGroupsClient()
-#     task_key = datastore_client.key('server-side-tagging', str(store_id[0]))
-#     task = datastore_client.get(task_key)
-#     json_data={
-#         "region":task.get('region'),
-#     }
-
-#     #region=str(json_data['region'])
-
-#     # Initialize request argument(s)
-#     request = compute_v1.ListRegionNetworkEndpointGroupsRequest(
-#         project=project,
-#         #region=region,
-#     )
-
-#     # Make the request
-#     response = client.list(request=request)
-#     items = response.items
-#     for item in items:
-#         if str(store_id[0]) in item.name:
-#             item_list.append(item.name)
-#             item_list.append(item.creation_timestamp)
-#             json_var={
-#                 "name":item.name,
-#                 "create_time":item.creation_timestamp
-#             }
-#             item_list_final.append(json_var)
-#             print('------------')
-#     print(item_list_final)
- 
-#     if item_list_final[0]['create_time'] < item_list_final[1]['create_time']:
-#         neg=(item_list_final[0]['name'])
-#     else:
-#         neg=(item_list_final[1]['name'])
-#     neg_name.append(neg)
-#     print(neg_name)
-#     return response
-
-
-# def neg_delete():
-#     # Create a client
-#     task_key = datastore_client.key('server-side-tagging', str(store_id[0]))
-#     task = datastore_client.get(task_key)
-#     json_data={
-#         "region":task.get('region'),
-#     }
-
-#     #region=str(json_data['region'])
-    
-
-#     # #region="us-central1" #get from datastore
-#     client = compute_v1.RegionNetworkEndpointGroupsClient()
-
-#     # Initialize request argument(s)
-#     request = compute_v1.DeleteRegionNetworkEndpointGroupRequest(
-
-#         network_endpoint_group=neg_name[0],
-#         # network_endpoint_group='sst-13241-neg-1700030259258',
-#         project=project,
-#         #region=region
-#         )
-#     response = client.delete(request=request)
-#     print(response)
-# # neg_delete()
-
-
-# def ssl_delete(certificate_name):
-#     client = compute_v1.SslCertificatesClient()
-#     print(1)
-
-#     request = compute_v1.DeleteSslCertificateRequest(
-#         project= project,
-#         ssl_certificate= certificate_name
-#     )
-#     print(2)
-#     try:
-#         # Make the delete request
-#         response = client.delete(request=request)
-#         print(response)
-#         print('deleted succesfully')
-#     except Exception as e:
-#         print(f"An error occurred: {e}")
-
-
 
 def get_ssl_certi(certificate_name:str):
     client = compute_v1.SslCertificatesClient()

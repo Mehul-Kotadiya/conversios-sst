@@ -62,10 +62,3 @@ def ssl_get_managed_domains(certificate_name):
     # Handle the response
     return response.creation_timestamp, response.managed.domains
 
-
-# certificate_name = "test-ssl-1"
-# domains = ["sst.tatvic.net", "example.com"]
-
-# ssl_create_managed(certificate_name, domains)
-# ssl_delete(certificate_name)
-# ssl_get_managed_domains(certificate_name)

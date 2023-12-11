@@ -58,25 +58,17 @@ async def create_service_preview_tagging(store_id: str,region:str,container_conf
             }
         }    
     )
-    print('request sucessfully set')
-    print("sst-"+store_id+suffix)
-    print(request)
+    # print('request sucessfully set')
+    # print("sst-"+store_id+suffix)
+    # print(request)
     operation = run_client.create_service(metadata= [("name", "sst-"+store_id+suffix)],request=request)
-    print("Setting up preview server")
+    # print("Setting up preview server")
     response = operation.result()
     preview_url_value=response.uri
     nx=(str(response.name))
-    print("Name of full server name :",nx)
+    # print("Name of full server name :",nx)
     # print(preview_url_value)
-    print("Preview_Server Response:",response)
-    
-    # cont=str(response.template.containers)
-    # match = re.search(r'name: "CONTAINER_CONFIG"\s+value: "(.*?)"', cont)
-    # if match:
-    #     container_config_value = match.group(1)
-    #     # print(container_config_value)
-    # else:
-    #     print("CONTAINER_CONFIG not found in the input string.")
+
     
     return preview_url_value,nx
 
@@ -89,10 +81,6 @@ async def create_service_tagging(store_id,region,container_config,preview_server
         service_id="sst-"+store_id,
         service = {
             "ingress": "INGRESS_TRAFFIC_ALL",
-            # "traffic": {
-            #     "type_":"TRAFFIC_TARGET_ALLOCATION_TYPE_LATEST",
-            #     "percent": 100
-            # },
             "template": {
                 "scaling":{
                     "min_instance_count":1,
@@ -120,16 +108,16 @@ async def create_service_tagging(store_id,region,container_config,preview_server
     )
 
     operation = run_client.create_service(metadata= [("name", "sst-"+store_id)],request=request)
-    print("Setting up server side tagging...")
+    # print("Setting up server side tagging...")
     response = operation.result()
     res1=str(response)
     server_url_value=response.uri
     nx=(str(response.name))
-    print("Name of full server name :",nx)
+    # print("Name of full server name :",nx)
     nt=(str(response.name)).split("services/")[1]
-    print("Name of server:",nt)
-    print("Server_url",server_url_value)
-    print("Tagging server:",res1)
+    # print("Name of server:",nt)
+    # print("Server_url",server_url_value)
+    # print("Tagging server:",res1)
     return server_url_value,nx,res1
 
 def sample_set_iam_policy(resource):

@@ -69,7 +69,7 @@ def domain_list(new_domain: str,certificate_name: str):
     latest_timestamp = None
 
     for i in all_certificates:
-          print("start")
+        #   print("start")
           max_timestamp,domains, = ssl_get_managed_domains(i)
           dic1[i]= []
           dic1[i].append(max_timestamp)
@@ -113,7 +113,7 @@ def domain_list(new_domain: str,certificate_name: str):
 
         new_certificate_domains = []
         new_certificate_domains.append(new_domain)
-        print('after 99 ',new_certificate_domains, all_certificates)    
+        # print('after 99 ',new_certificate_domains, all_certificates)    
 
         return new_certificate_domains, all_certificates
 

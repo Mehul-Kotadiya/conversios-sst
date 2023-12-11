@@ -172,7 +172,7 @@ def create_delete_batch():
     except Exception as e:
         print(e)
 
-    return 'Function run well'
+    return 'Function runs well'
 
 def create_delete_https_proxy_get():
     client = compute_v1.TargetHttpsProxiesClient()

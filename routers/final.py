@@ -164,7 +164,7 @@ async def update(request:Request):
     timestamp1= round(time.time()*1000)
 
     certi_status=latest_certi_find()
-    print(certi_status)
+    # print(certi_status)
     if certi_status == 'PROVISIONING':
         up_kind = 'update_request_queue'
         up_data=client.query(kind=up_kind)
@@ -251,7 +251,7 @@ async def update(request:Request):
                                 "containers": [{
                                     "image": "gcr.io/cloud-tagging-10302018/gtm-cloud-image:stable",
                                     "resources": {
-                                        "cpu_idle": False
+                                        "cpu_idle": True
                                     },
                                     "env": [{
                                         "name": "CONTAINER_CONFIG",
@@ -281,7 +281,7 @@ async def update(request:Request):
                                 "containers": [{
                                     "image": "gcr.io/cloud-tagging-10302018/gtm-cloud-image:stable",
                                     "resources": {
-                                        "cpu_idle": False
+                                        "cpu_idle": True
                                     },
                                     "env": [{
                                         "name": "CONTAINER_CONFIG",
@@ -370,9 +370,9 @@ async def update(request:Request):
 
             # Domain given and update
                 elif domain_datastore!= 'None' and domain!=None:
-                    print('i am under domain update part')
-                    print('domain datastore',domain_datastore)
-                    print('domain',domain)
+                    # print('i am under domain update part')
+                    # print('domain datastore',domain_datastore)
+                    # print('domain',domain)
                     timestamp1= round(time.time()*1000)
                     store_id=min_time_entry['store_id']
                     task_key = client.key('server-side-tagging', store_id)

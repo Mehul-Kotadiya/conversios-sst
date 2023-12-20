@@ -20,7 +20,7 @@ def https_proxy_get(load_balancer: str):
     )
     # Make the request
     response = client.get(request=request)
-    print('re',response)
+    # print('re',response)
     certis = response.ssl_certificates
     return certis
 
@@ -47,13 +47,14 @@ def ssl_get_managed_domains(certificate_name):
 def domain_list():
     # print(lb)
     all_certificates = https_proxy_get(load_balancer=lb)
+    # print('all',all_certificates)
     
     dic1 = {}
     latest_certificate = None
     latest_timestamp = None
 
     for i in all_certificates:
-          print("start")
+        #   print("start")
           max_timestamp,domains, = ssl_get_managed_domains(i)
           dic1[i]= []
           dic1[i].append(max_timestamp)
@@ -70,14 +71,19 @@ def domain_list():
     certificate_99 = None
     for certificate, data in dic1.items():
         each_cnt_domain = len(data[1])
-        if  certificate_99 is None or each_cnt_domain == 99:
+        if  each_cnt_domain == 99:
             certificate_99 = certificate
         
-
+    # print('99',certificate_99)
     remaining_certificate = []
     remaining_certificate = list(dic1.keys())
-    remaining_certificate.remove(certificate_99)
-    remaining_certificate.remove(latest_certificate)
+    # print('remaining_certificate',remaining_certificate)
+    if certificate_99 != None:
+        remaining_certificate.remove(certificate_99)
+
+    if latest_certificate != None:
+        remaining_certificate.remove(latest_certificate)
+    # print('done')
 
     
     return certificate_99, latest_certificate,remaining_certificate

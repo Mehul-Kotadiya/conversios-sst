@@ -41,7 +41,7 @@ async def create_service_preview_tagging(store_id: str,region:str,container_conf
                 "containers": [{
                     "image": "gcr.io/cloud-tagging-10302018/gtm-cloud-image:stable",
                     "resources": {
-                        "cpu_idle": False
+                        "cpu_idle": True
                     },
                     "env": [{
                         "name": "CONTAINER_CONFIG",
@@ -89,7 +89,7 @@ async def create_service_tagging(store_id,region,container_config,preview_server
                 "containers": [{
                     "image": "gcr.io/cloud-tagging-10302018/gtm-cloud-image:stable",
                     "resources": {
-                        "cpu_idle": False
+                        "cpu_idle": True
                     },
                     "env": [{
                         "name": "CONTAINER_CONFIG",
@@ -137,5 +137,5 @@ def sample_set_iam_policy(resource):
 
 
     response = client.set_iam_policy(request=request)
-    print(response)
+    # print(response)
 

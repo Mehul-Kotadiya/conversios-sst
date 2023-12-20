@@ -148,31 +148,44 @@ subscription_name='server-side-tagging-topic-sub'
 @app.get("/create_delete")
 
 def create_delete_batch():
+    # certi_create()
+    # exit()
 
     full_url_certi = []
     certificate_99,latest_certificate,remaining_certificate = DomainList.domain_list()
-    full_url_certi.append(certificate_99)
-    full_url_certi.append(latest_certificate)
-    certi_status = get_ssl_certi(latest_certificate.split("/")[-1])
-    try:
-        if certi_status == 'PROVISIONING' :
-        
-            finger_print=create_delete_https_proxy_get()
-            #Patch request on Loadbalancer with updated certificate
-            create_delete_patch_lb_front_end(certilist=full_url_certi,fingerprint=finger_print[0])     
-            time.sleep(10)
-            for i in remaining_certificate:
-                certificate_name=i.split("/")[-1]
-                #Delete non-required certificate
-                create_delete_ssl_delete(certificate_name)
+    # print('certificate_99',certificate_99)
+    # print('latest_certificate',latest_certificate)
+    # print('remaining_certificate',remaining_certificate)
+    if len(remaining_certificate) != 0:
+        full_url_certi.append(certificate_99)
+        full_url_certi.append(latest_certificate)
+        certi_status = get_ssl_certi(latest_certificate.split("/")[-1])
+        # print(certi_status)
+        try:
+            if certi_status == 'PROVISIONING' :
+            
+                finger_print=create_delete_https_proxy_get()
+              
+                #Patch request on Loadbalancer with updated certificate
+                create_delete_patch_lb_front_end(certilist=full_url_certi,fingerprint=finger_print[0])
+                   
+                time.sleep(10)
+                for i in remaining_certificate:
+                    certificate_name=i.split("/")[-1]
+                    #Delete non-required certificate
+                    create_delete_ssl_delete(certificate_name)
+                    
 
 
-        else:
-            return 'There is no new certificate is create'
-    except Exception as e:
-        print(e)
+            else:
+                return 'There is no new certificate is create'
+        except Exception as e:
+            print(e)
+    else:
+        print('There is no required delete operation')
 
-    return 'Function runs well'
+
+    return 'Function run Successfully'
 
 def create_delete_https_proxy_get():
     client = compute_v1.TargetHttpsProxiesClient()
@@ -191,19 +204,25 @@ def create_delete_https_proxy_get():
 
 
 def create_delete_patch_lb_front_end(certilist:list,fingerprint:str):
+    
     client = compute_v1.TargetHttpsProxiesClient()
     request_body={
         "fingerprint": fingerprint,
         "ssl_certificates" :certilist
     }
+    
     new_lb =lb   
     tar_proxy=str(new_lb+proxy_name)
+    # print('under patch lb before request',certilist)
+    
     request = compute_v1.PatchTargetHttpsProxyRequest(
         project=project,
         target_https_proxy=tar_proxy,
         target_https_proxy_resource=request_body    
     )
+    
     response = client.patch(request=request)
+   
     return response
 
 def create_delete_ssl_delete(certificate_name):
@@ -233,3 +252,48 @@ def get_ssl_certi(certificate_name:str):
 )
     response = client.get(request=request)
     return response.managed.status
+
+
+# def certi_create():
+    domain_listt_dupli=[
+    "exampvcbnle1.com", "testdocvbnmain.net", "dummybvnwebsite.org", "samplvcbepage.com", "mocksite.net",
+    "placevcbnholder.org", "trythisdomain.com", "fauxwebsite.net", "tempdbvnomain.org", "mytestsite.com",
+    "pretendpage.net", "fakedom465ain.org", "trialwebsite.com", "imitationnet.net", "demobvnorg.org",
+    "playdbvnomain.com", "fictiondfgalpage.net", "sandbox.org", "testdummy.com", "faketestsite.net",
+    "notrbvneal.org", "mimicdomain.com", "trialsite.net", "dummywebpage.org", "fauxsite.com",
+    "exagfbnmple.net", "prefgbtendweb.org", "placeholfghderpage.com", "test1net.net", "tempwebsite.org",
+    "trydomain.com", "sampleorg.net", "mockdgbfhummy.org", "mywebsgbvhite.com", "notrealnet.net",
+    "imitationpage.com", "demoorg.net", "playdomain.org", "pretecvbndnet.com", "sandboxsite.net",
+    "testdummy.org", "faketest.com", "notrealpage.net", "mimiccvbdomain.org", "trialsite.com",
+    "dummyweb.net", "fauxsite.org", "examplepage.com", "trywebsite.net", "placeholder.net",
+    "testdomain.org", "fakedummy.com", "samplewebsite.net", "tempdocvbnmain2.org", "mytestsite.com",
+    "pretendpage.net", "fak3etest.org", "imitation.com", "trialsite.net", "dummywebpage.org",
+    "sandboxsite.com", "testdummy.net", "fauxdomain.org", "examplewebsite.com", "notreal.net",
+    "mimi4cpage.org", "playdomain.com", "pret4endweb.net", "tempd1omain1.org", "tryth8isdomain.com",
+    "samplepag6e.net", "mocksdfgs5ite.org", "placeholder.com", "fakedomain.net", "trialwebsite.org",
+    "imitationnet.com", "demoorg.net", "playdomain.org", "notrealwebsite.com", "mimicdomain.net",
+    "trialsite.org", "dummywebpag4e.com", "fauxs3ite.net", "exa7mple.org", "pretend8net.com",
+    "placeholderpage.net", "testnet.org", "tempwebsite.com", "tr1ydomain.net", "sampleorg.org",
+    "mockdummy.com", "mywebsite.net", "notrealne1t.org", "fakedoma7in.net", "imitationpage.net",
+    "demoorg.com", "playdomain.net", "preten6dnet.org","yrfdtguh.com","dtfyguhji.com","gvftr5768y.com","jkbhgfch987.com","jkhvtfguy675.com","wertyu.net","765rtyujhgftyu.org"
+]
+    unique_list = list(set(domain_listt_dupli))
+    
+    certi_name = 'test-certi-99-test'
+    client = compute_v1.SslCertificatesClient()
+
+    ssl_certificate = compute_v1.SslCertificate(
+        name=certi_name,
+        managed=compute_v1.SslCertificateManagedSslCertificate(
+            domains=unique_list
+        ),
+        type="MANAGED"
+    )
+    request = compute_v1.InsertSslCertificateRequest(
+        project=project,
+        ssl_certificate_resource=ssl_certificate
+    )
+
+    response = client.insert(request=request)
+    response = response.result()
+    return response

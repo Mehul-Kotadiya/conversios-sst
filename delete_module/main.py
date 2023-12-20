@@ -146,8 +146,7 @@ subscription_name='server-side-tagging-topic-sub'
 ''' Delete the perivous certificate'''
 
 @app.get("/create_delete")
-
-def create_delete_batch():
+async def create_delete_batch(request: Request):
     # certi_create()
     # exit()
 

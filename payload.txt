@@ -1,0 +1,20 @@
+URL: https://dev-backend-sst-nszpmsl3ca-el.a.run.app/sst/create
+
+payload:
+
+{
+    "store_id":"1237878",
+    "region" : "asia-south1",
+    "container_config":"aWQ9R1RNLU5EWlRTRE0mZW52PTEmYXV0aD1ma0hfRHNyOWk1YmZQT1dvSGxyY0Zn"
+}
+
+
+CURl Request:
+
+curl --location 'https://dev-backend-sst-nszpmsl3ca-el.a.run.app/sst/create' \
+--header 'Content-Type: application/json' \
+--data '{
+    "store_id":"76890",
+    "region" : "asia-south1",
+    "container_config":"aWQ9R1RNLU5EWlRTRE0mZW52PTEmYXV0aD1ma0hfRHNyOWk1YmZQT1dvSGxyY0Zn"
+}'

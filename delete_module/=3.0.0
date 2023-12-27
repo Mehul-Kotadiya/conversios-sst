@@ -1,0 +1,28 @@
+Defaulting to user installation because normal site-packages is not writeable
+Collecting google-cloud-logging
+  Downloading google_cloud_logging-3.9.0-py2.py3-none-any.whl (207 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 207.3/207.3 KB 1.6 MB/s eta 0:00:00
+Requirement already satisfied: protobuf!=3.20.0,!=3.20.1,!=4.21.0,!=4.21.1,!=4.21.2,!=4.21.3,!=4.21.4,!=4.21.5,<5.0.0dev,>=3.19.5 in /home/mehulkotadiya/.local/lib/python3.10/site-packages (from google-cloud-logging) (4.23.4)
+Collecting google-cloud-appengine-logging<2.0.0dev,>=0.1.0
+  Downloading google_cloud_appengine_logging-1.4.0-py2.py3-none-any.whl (15 kB)
+Requirement already satisfied: proto-plus<2.0.0dev,>=1.22.0 in /home/mehulkotadiya/.local/lib/python3.10/site-packages (from google-cloud-logging) (1.22.3)
+Requirement already satisfied: google-cloud-core<3.0.0dev,>=2.0.0 in /home/mehulkotadiya/.local/lib/python3.10/site-packages (from google-cloud-logging) (2.3.3)
+Requirement already satisfied: grpc-google-iam-v1<1.0.0dev,>=0.12.4 in /home/mehulkotadiya/.local/lib/python3.10/site-packages (from google-cloud-logging) (0.12.6)
+Requirement already satisfied: google-api-core[grpc]!=2.0.*,!=2.1.*,!=2.2.*,!=2.3.*,!=2.4.*,!=2.5.*,!=2.6.*,!=2.7.*,<3.0.0dev,>=1.33.2 in /home/mehulkotadiya/.local/lib/python3.10/site-packages (from google-cloud-logging) (2.11.1)
+Collecting google-cloud-audit-log<1.0.0dev,>=0.1.0
+  Downloading google_cloud_audit_log-0.2.5-py2.py3-none-any.whl (12 kB)
+Requirement already satisfied: google-auth<3.0.dev0,>=2.14.1 in /home/mehulkotadiya/.local/lib/python3.10/site-packages (from google-api-core[grpc]!=2.0.*,!=2.1.*,!=2.2.*,!=2.3.*,!=2.4.*,!=2.5.*,!=2.6.*,!=2.7.*,<3.0.0dev,>=1.33.2->google-cloud-logging) (2.23.0)
+Requirement already satisfied: googleapis-common-protos<2.0.dev0,>=1.56.2 in /home/mehulkotadiya/.local/lib/python3.10/site-packages (from google-api-core[grpc]!=2.0.*,!=2.1.*,!=2.2.*,!=2.3.*,!=2.4.*,!=2.5.*,!=2.6.*,!=2.7.*,<3.0.0dev,>=1.33.2->google-cloud-logging) (1.60.0)
+Requirement already satisfied: requests<3.0.0.dev0,>=2.18.0 in /home/mehulkotadiya/.local/lib/python3.10/site-packages (from google-api-core[grpc]!=2.0.*,!=2.1.*,!=2.2.*,!=2.3.*,!=2.4.*,!=2.5.*,!=2.6.*,!=2.7.*,<3.0.0dev,>=1.33.2->google-cloud-logging) (2.31.0)
+Requirement already satisfied: grpcio<2.0dev,>=1.33.2 in /home/mehulkotadiya/.local/lib/python3.10/site-packages (from google-api-core[grpc]!=2.0.*,!=2.1.*,!=2.2.*,!=2.3.*,!=2.4.*,!=2.5.*,!=2.6.*,!=2.7.*,<3.0.0dev,>=1.33.2->google-cloud-logging) (1.58.0)
+Requirement already satisfied: grpcio-status<2.0.dev0,>=1.33.2 in /home/mehulkotadiya/.local/lib/python3.10/site-packages (from google-api-core[grpc]!=2.0.*,!=2.1.*,!=2.2.*,!=2.3.*,!=2.4.*,!=2.5.*,!=2.6.*,!=2.7.*,<3.0.0dev,>=1.33.2->google-cloud-logging) (1.58.0)
+Requirement already satisfied: rsa<5,>=3.1.4 in /home/mehulkotadiya/.local/lib/python3.10/site-packages (from google-auth<3.0.dev0,>=2.14.1->google-api-core[grpc]!=2.0.*,!=2.1.*,!=2.2.*,!=2.3.*,!=2.4.*,!=2.5.*,!=2.6.*,!=2.7.*,<3.0.0dev,>=1.33.2->google-cloud-logging) (4.9)
+Requirement already satisfied: pyasn1-modules>=0.2.1 in /home/mehulkotadiya/.local/lib/python3.10/site-packages (from google-auth<3.0.dev0,>=2.14.1->google-api-core[grpc]!=2.0.*,!=2.1.*,!=2.2.*,!=2.3.*,!=2.4.*,!=2.5.*,!=2.6.*,!=2.7.*,<3.0.0dev,>=1.33.2->google-cloud-logging) (0.3.0)
+Requirement already satisfied: urllib3<2.0 in /usr/lib/python3/dist-packages (from google-auth<3.0.dev0,>=2.14.1->google-api-core[grpc]!=2.0.*,!=2.1.*,!=2.2.*,!=2.3.*,!=2.4.*,!=2.5.*,!=2.6.*,!=2.7.*,<3.0.0dev,>=1.33.2->google-cloud-logging) (1.26.5)
+Requirement already satisfied: cachetools<6.0,>=2.0.0 in /home/mehulkotadiya/.local/lib/python3.10/site-packages (from google-auth<3.0.dev0,>=2.14.1->google-api-core[grpc]!=2.0.*,!=2.1.*,!=2.2.*,!=2.3.*,!=2.4.*,!=2.5.*,!=2.6.*,!=2.7.*,<3.0.0dev,>=1.33.2->google-cloud-logging) (5.3.1)
+Requirement already satisfied: charset-normalizer<4,>=2 in /home/mehulkotadiya/.local/lib/python3.10/site-packages (from requests<3.0.0.dev0,>=2.18.0->google-api-core[grpc]!=2.0.*,!=2.1.*,!=2.2.*,!=2.3.*,!=2.4.*,!=2.5.*,!=2.6.*,!=2.7.*,<3.0.0dev,>=1.33.2->google-cloud-logging) (2.0.12)
+Requirement already satisfied: certifi>=2017.4.17 in /usr/lib/python3/dist-packages (from requests<3.0.0.dev0,>=2.18.0->google-api-core[grpc]!=2.0.*,!=2.1.*,!=2.2.*,!=2.3.*,!=2.4.*,!=2.5.*,!=2.6.*,!=2.7.*,<3.0.0dev,>=1.33.2->google-cloud-logging) (2020.6.20)
+Requirement already satisfied: idna<4,>=2.5 in /usr/lib/python3/dist-packages (from requests<3.0.0.dev0,>=2.18.0->google-api-core[grpc]!=2.0.*,!=2.1.*,!=2.2.*,!=2.3.*,!=2.4.*,!=2.5.*,!=2.6.*,!=2.7.*,<3.0.0dev,>=1.33.2->google-cloud-logging) (3.3)
+Requirement already satisfied: pyasn1<0.6.0,>=0.4.6 in /home/mehulkotadiya/.local/lib/python3.10/site-packages (from pyasn1-modules>=0.2.1->google-auth<3.0.dev0,>=2.14.1->google-api-core[grpc]!=2.0.*,!=2.1.*,!=2.2.*,!=2.3.*,!=2.4.*,!=2.5.*,!=2.6.*,!=2.7.*,<3.0.0dev,>=1.33.2->google-cloud-logging) (0.5.0)
+Installing collected packages: google-cloud-audit-log, google-cloud-appengine-logging, google-cloud-logging
+Successfully installed google-cloud-appengine-logging-1.4.0 google-cloud-audit-log-0.2.5 google-cloud-logging-3.9.0

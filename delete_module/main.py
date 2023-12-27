@@ -201,7 +201,7 @@ async def create_delete_batch(request: Request):
 
     return 'Function run Successfully-'
 
-async def create_delete_https_proxy_get():
+def create_delete_https_proxy_get():
     client = compute_v1.TargetHttpsProxiesClient()
     new_lb = lb
     tar_proxy=str(new_lb+proxy_name)
@@ -216,8 +216,7 @@ async def create_delete_https_proxy_get():
    
     return cd_certi_figer_print
 
-
-async def create_delete_patch_lb_front_end(certilist:list,fingerprint:str):
+def create_delete_patch_lb_front_end(certilist:list,fingerprint:str):
     
     client = compute_v1.TargetHttpsProxiesClient()
     request_body={
@@ -239,7 +238,7 @@ async def create_delete_patch_lb_front_end(certilist:list,fingerprint:str):
    
     return response
 
-async def create_delete_ssl_delete(certificate_name):
+def create_delete_ssl_delete(certificate_name):
     client = compute_v1.SslCertificatesClient()
     request = compute_v1.DeleteSslCertificateRequest(
         project= project,
@@ -257,7 +256,7 @@ async def create_delete_ssl_delete(certificate_name):
 if __name__ == "__main__":
     uvicorn.run("main:app", host="127.0.0.2", port=8080, reload=True)
 
-async def get_ssl_certi(certificate_name:str):
+def get_ssl_certi(certificate_name:str):
     client = compute_v1.SslCertificatesClient()
 
     request = compute_v1.GetSslCertificateRequest(

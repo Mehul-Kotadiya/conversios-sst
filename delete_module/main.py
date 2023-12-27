@@ -161,6 +161,7 @@ async def create_delete_batch(request: Request):
 
     full_url_certi = []
     certificate_99,latest_certificate,remaining_certificate = DomainList.domain_list()
+    logging.info('certificate fetch is sucessfully')
     # print('certificate_99',certificate_99)
     # print('latest_certificate',latest_certificate)
     # print('remaining_certificate',remaining_certificate)
@@ -168,9 +169,11 @@ async def create_delete_batch(request: Request):
         full_url_certi.append(certificate_99)
         full_url_certi.append(latest_certificate)
         certi_status = get_ssl_certi(latest_certificate.split("/")[-1])
+        logging.info('get ssl certi end')
         # print(certi_status)
         try:
             if certi_status == 'PROVISIONING' :
+                logging.info('under try')
                 
             
                 finger_print=create_delete_https_proxy_get()

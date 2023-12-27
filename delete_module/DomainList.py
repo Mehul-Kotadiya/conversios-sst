@@ -1,6 +1,7 @@
 import configparser
 import time 
 from google.cloud import compute_v1
+import logging
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -46,8 +47,10 @@ def ssl_get_managed_domains(certificate_name):
 
 def domain_list():
     # print(lb)
+    logging.info('i am under domain list function')
     all_certificates = https_proxy_get(load_balancer=lb)
     # print('all',all_certificates)
+    logging.info('proxy get function end')
     
     dic1 = {}
     latest_certificate = None
@@ -56,6 +59,7 @@ def domain_list():
     for i in all_certificates:
         #   print("start")
           max_timestamp,domains, = ssl_get_managed_domains(i)
+          logging.info('sst managed get domains function end')
           dic1[i]= []
           dic1[i].append(max_timestamp)
           dic1[i].append(domains)
@@ -84,7 +88,7 @@ def domain_list():
     if latest_certificate != None:
         remaining_certificate.remove(latest_certificate)
     # print('done')
-
+    logging.info('domain list function end')
     
     return certificate_99, latest_certificate,remaining_certificate
 

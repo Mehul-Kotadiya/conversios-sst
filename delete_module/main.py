@@ -9,9 +9,13 @@ import uvicorn
 from google.cloud import datastore
 import time
 import DomainList
+import logging
 project_id = 'server-side-tagging-392006'
 
-
+logging.basicConfig(filename="newfile.log",
+                    format='%(asctime)s %(message)s',
+                    filemode='w')
+logger = logging.getLogger()
 
 datastore_client = datastore.Client()
 store_id=[]
@@ -147,6 +151,8 @@ subscription_name='server-side-tagging-topic-sub'
 
 @app.get("/create_delete")
 async def create_delete_batch(request: Request):
+    print('start')
+    logger.info('Logging is sucessfully set')
     # certi_create()
     # exit()
 
@@ -162,16 +168,17 @@ async def create_delete_batch(request: Request):
         # print(certi_status)
         try:
             if certi_status == 'PROVISIONING' :
+                
             
                 finger_print=create_delete_https_proxy_get()
-                print('patch success')
+                logger.info('Patch request is sucessfully set')
               
                 #Patch request on Loadbalancer with updated certificate
                 create_delete_patch_lb_front_end(certilist=full_url_certi,fingerprint=finger_print[0])
                    
                 time.sleep(10)
                 for i in remaining_certificate:
-                    print('under delete')
+                    logger.info('Under delete request')
 
                     certificate_name=i.split("/")[-1]
                     print(certificate_name)

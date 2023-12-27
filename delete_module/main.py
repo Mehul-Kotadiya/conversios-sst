@@ -12,10 +12,13 @@ import DomainList
 import logging
 project_id = 'server-side-tagging-392006'
 
-logging.basicConfig(filename="newfile.log",
-                    format='%(asctime)s %(message)s',
-                    filemode='w')
-logger = logging.getLogger()
+# set up the Google Cloud Logging python client library
+import google.cloud.logging
+client = google.cloud.logging.Client()
+client.setup_logging()
+
+# logging.basicConfig(filename="newfile.log", format='%(asctime)s %(message)s',filemode='w')
+# logging = logging.getlogging()
 
 datastore_client = datastore.Client()
 store_id=[]
@@ -152,7 +155,7 @@ subscription_name='server-side-tagging-topic-sub'
 @app.get("/create_delete")
 async def create_delete_batch(request: Request):
     print('start')
-    logger.info('Logging is sucessfully set')
+    logging.info('Logging is sucessfully set')
     # certi_create()
     # exit()
 
@@ -171,14 +174,14 @@ async def create_delete_batch(request: Request):
                 
             
                 finger_print=create_delete_https_proxy_get()
-                logger.info('Patch request is sucessfully set')
+                logging.info('Patch request is sucessfully set')
               
                 #Patch request on Loadbalancer with updated certificate
                 create_delete_patch_lb_front_end(certilist=full_url_certi,fingerprint=finger_print[0])
                    
                 time.sleep(10)
                 for i in remaining_certificate:
-                    logger.info('Under delete request')
+                    logging.info('Under delete request')
 
                     certificate_name=i.split("/")[-1]
                     print(certificate_name)

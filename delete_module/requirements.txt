@@ -7,3 +7,4 @@ google-cloud-run
 google-cloud-compute
 google-cloud-datastore
 google-cloud-pubsub
+google-cloud-logging>=3.9.0

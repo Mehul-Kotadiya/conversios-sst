@@ -184,7 +184,7 @@ async def create_delete_batch(request: Request):
         print('There is no required delete operation')
 
 
-    return 'Function run Successfully ....'
+    return 'Function run Successfully-'
 
 def create_delete_https_proxy_get():
     client = compute_v1.TargetHttpsProxiesClient()

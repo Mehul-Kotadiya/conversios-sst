@@ -219,7 +219,7 @@ def create_delete_https_proxy_get():
    
     return cd_certi_figer_print
 
-async def create_delete_patch_lb_front_end(certilist:list,fingerprint:str):
+def create_delete_patch_lb_front_end(certilist:list,fingerprint:str):
     
     client = compute_v1.TargetHttpsProxiesClient()
     request_body={

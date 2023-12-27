@@ -44,7 +44,7 @@ def ssl_get_managed_domains(certificate_name):
 
 
 
-def domain_list():
+async def domain_list():
     # print(lb)
     all_certificates = https_proxy_get(load_balancer=lb)
     # print('all',all_certificates)

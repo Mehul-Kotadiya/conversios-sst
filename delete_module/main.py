@@ -246,6 +246,7 @@ def create_delete_patch_lb_front_end(certilist:list,fingerprint:str):
     )
     
     response = client.patch(request=request)
+    logging.info("patch function end")
    
     return response
 

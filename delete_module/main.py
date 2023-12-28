@@ -237,7 +237,7 @@ def create_delete_patch_lb_front_end(certilist:list,fingerprint:str):
         "fingerprint": fingerprint,
         "ssl_certificates" :certilist
     }
-    logging.info('listcerti',certilist)
+    logging.info('requestbody created')
     new_lb =lb   
     tar_proxy=str(new_lb+proxy_name)
     # print('under patch lb before request',certilist)

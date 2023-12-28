@@ -258,6 +258,7 @@ def create_delete_ssl_delete(certificate_name):
         logging.info("error occures",e)
         print(f"An error occurred: {e}")
 
+    return response
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="127.0.0.2", port=8080, reload=True)

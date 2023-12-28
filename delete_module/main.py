@@ -230,23 +230,25 @@ def create_delete_https_proxy_get():
 
 def create_delete_patch_lb_front_end(certilist:list,fingerprint:str):
     logging.info("under patch function")
+
     
     client = compute_v1.TargetHttpsProxiesClient()
     request_body={
         "fingerprint": fingerprint,
         "ssl_certificates" :certilist
     }
-    
+    logging.info('listcerti',certilist)
     new_lb =lb   
     tar_proxy=str(new_lb+proxy_name)
     # print('under patch lb before request',certilist)
+    logging.info('request before')
     
     request = compute_v1.PatchTargetHttpsProxyRequest(
         project=project,
         target_https_proxy=tar_proxy,
         target_https_proxy_resource=request_body    
     )
-    
+    logging.info('response before')
     response = client.patch(request=request)
     logging.info("patch function end")
    

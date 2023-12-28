@@ -195,6 +195,7 @@ async def create_delete_batch(request: Request):
                     print('delete required certi list',certificate_name)
                    
                     #Delete non-required certificate
+                    time.sleep(10)
                     create_delete_ssl_delete(certificate_name)
                     
                     

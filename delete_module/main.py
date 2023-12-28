@@ -179,6 +179,7 @@ async def create_delete_batch(request: Request):
                 
             
                 finger_print=create_delete_https_proxy_get()
+                logging.info('fingerprint end')
 
               
                 #Patch request on Loadbalancer with updated certificate

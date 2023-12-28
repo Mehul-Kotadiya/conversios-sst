@@ -187,7 +187,7 @@ async def create_delete_batch(request: Request):
                     logging.info('Under delete request')
 
                     certificate_name=i.split("/")[-1]
-                    print(certificate_name)
+                    logging.info("certificate required to delete",certificate_name)
                     #Delete non-required certificate
                     create_delete_ssl_delete(certificate_name)
                     
@@ -242,6 +242,7 @@ def create_delete_patch_lb_front_end(certilist:list,fingerprint:str):
     return response
 
 def create_delete_ssl_delete(certificate_name):
+    logging.info("under delete certi function")
     client = compute_v1.SslCertificatesClient()
     request = compute_v1.DeleteSslCertificateRequest(
         project= project,
@@ -251,8 +252,10 @@ def create_delete_ssl_delete(certificate_name):
     try:
         # Make the delete request
         response = client.delete(request=request)
+        logging.info("under delete certi function try")
         print('certificate '+certificate_name +' deleted succesfully')
     except Exception as e:
+        logging.info("error occures",e)
         print(f"An error occurred: {e}")
 
 

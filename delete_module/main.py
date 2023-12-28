@@ -154,13 +154,14 @@ subscription_name='server-side-tagging-topic-sub'
 
 @app.get("/create_delete")
 async def create_delete_batch(request: Request):
-    print('start')
+    print('start create delete')
     logging.info('Logging is sucessfully set')
     # certi_create()
     # exit()
 
     full_url_certi = []
     certificate_99,latest_certificate,remaining_certificate = DomainList.domain_list()
+    print('domain list complete')
     logging.info('certificate fetch is sucessfully')
     # print('certificate_99',certificate_99)
     # print('latest_certificate',latest_certificate)
@@ -169,6 +170,7 @@ async def create_delete_batch(request: Request):
         full_url_certi.append(certificate_99)
         full_url_certi.append(latest_certificate)
         certi_status = get_ssl_certi(latest_certificate.split("/")[-1])
+        print('ssl certi complete')
         logging.info('get ssl certi end')
         # print(certi_status)
         try:
@@ -178,6 +180,7 @@ async def create_delete_batch(request: Request):
             
                 finger_print=create_delete_https_proxy_get()
                 logging.info('Patch request is sucessfully set')
+                print('Patch request is sucessfully set')
               
                 #Patch request on Loadbalancer with updated certificate
                 create_delete_patch_lb_front_end(certilist=full_url_certi,fingerprint=finger_print[0])
@@ -185,9 +188,12 @@ async def create_delete_batch(request: Request):
                 time.sleep(10)
                 for i in remaining_certificate:
                     logging.info('Under delete request')
-
+                    print('Under delete request')
+                    print('delete required certi',remaining_certificate)
                     certificate_name=i.split("/")[-1]
-                    logging.info("certificate required to delete",certificate_name)
+                    # logging.info("certificate required to delete",certificate_name)
+                    print('delete required certi list',certificate_name)
+                   
                     #Delete non-required certificate
                     create_delete_ssl_delete(certificate_name)
                     

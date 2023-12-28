@@ -179,11 +179,12 @@ async def create_delete_batch(request: Request):
                 
             
                 finger_print=create_delete_https_proxy_get()
-                logging.info('Patch request is sucessfully set')
-                print('Patch request is sucessfully set')
+
               
                 #Patch request on Loadbalancer with updated certificate
                 create_delete_patch_lb_front_end(certilist=full_url_certi,fingerprint=finger_print[0])
+                logging.info('Patch request is sucessfully set')
+                print('Patch request is sucessfully set')
                    
                 time.sleep(10)
                 for i in remaining_certificate:

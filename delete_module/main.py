@@ -248,15 +248,17 @@ def create_delete_patch_lb_front_end(certilist: list, fingerprint: str):
     current_time = now.strftime("%H:%M:%S")
     print('patch before time ',current_time)
     logging.info(request)
+    print(request)
     response = client.patch(request=request)
     result = response.result()
+    # exit()
     print('response',response)
     print('result',result)
     logging.info(request)
     now = datetime.now()
     current_time = now.strftime("%H:%M:%S")
     print('patch after time ',str(current_time))
-    logging.info("patch function end")
+    logging.info("patch function end..")
 
     return response
 

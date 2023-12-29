@@ -4,10 +4,10 @@ import configparser
 
 
 config = configparser.ConfigParser()
-config.read('config.ini')
+config.read("config.ini")
 project = config["gcp"]["project_id"]
 lb = config["gcp"]["load_balancer"]
-proxy_name="-target-proxy"
+proxy_name = "-target-proxy"
 
 client = compute_v1.TargetHttpsProxiesClient()
 compute_client = compute_v1.InstancesClient()
@@ -15,7 +15,7 @@ compute_client = compute_v1.InstancesClient()
 
 def https_proxy_get(load_balancer: str):
     new_lb = load_balancer
-    tar_proxy=str(new_lb+proxy_name)
+    tar_proxy = str(new_lb + proxy_name)
     # print("check",new_lb)
     request = compute_v1.GetTargetHttpsProxyRequest(
         project=project,
@@ -41,8 +41,8 @@ def https_proxy_list():
     for response in page_result:
         print(response)
 
-def https_proxy_attach_ssl_certificate(certificate_urls):
 
+def https_proxy_attach_ssl_certificate(certificate_urls):
     # compute_service = build('compute', 'v1', credentials=credentials)
     # client = compute_v1.TargetHttpsProxiesClient()
 
@@ -54,17 +54,14 @@ def https_proxy_attach_ssl_certificate(certificate_urls):
     # new_certificate_url=f'https://www.googleapis.com/compute/v1/projects/{project_id}/global/sslCertificates/{new_certificate_name}'
 
     # certificate_urls.append(new_certificate_url)
-    
 
-    request_body = {
-        'ssl_certificates': certificate_urls
-    }
+    request_body = {"ssl_certificates": certificate_urls}
 
     # Initialize request argument(s)
     request = compute_v1.SetSslCertificatesTargetHttpsProxyRequest(
-        project= project,
-        target_https_proxy= str(lb+proxy_name),
-        target_https_proxies_set_ssl_certificates_request_resource = request_body
+        project=project,
+        target_https_proxy=str(lb + proxy_name),
+        target_https_proxies_set_ssl_certificates_request_resource=request_body,
     )
 
     # Make the request
@@ -78,12 +75,14 @@ def https_proxy_attach_ssl_certificate(certificate_urls):
 
     print("Certificate updated:", response)
 
-def backend_create_global(backend_service_name: str, neg_name: str, neg_region: str):
 
+def backend_create_global(backend_service_name: str, neg_name: str, neg_region: str):
     # Create a client
     client = compute_v1.BackendServicesClient()
 
-    base_url = f"https://www.googleapis.com/compute/v1/projects/{project}/regions/{neg_region}".format(project, neg_region)
+    base_url = f"https://www.googleapis.com/compute/v1/projects/{project}/regions/{neg_region}".format(
+        project, neg_region
+    )
     neg_url = f"{base_url}/networkEndpointGroups/{neg_name}".format(neg_name)
 
     # neg_url = f"projects/{project}/global/networkEndpointGroups/{neg_name}".format(project, region, neg_name)
@@ -94,9 +93,9 @@ def backend_create_global(backend_service_name: str, neg_name: str, neg_region: 
             name=backend_service_name,
             protocol="HTTPS",
             load_balancing_scheme="EXTERNAL_MANAGED",
-            backends=[compute_v1.Backend(group=neg_url)]
+            backends=[compute_v1.Backend(group=neg_url)],
         ),
-        project=project
+        project=project,
     )
 
     # Make the request
@@ -104,9 +103,11 @@ def backend_create_global(backend_service_name: str, neg_name: str, neg_region: 
     response = response.result()
     return response
 
-def backend_create_regional(region: str, backend_service_name: str, neg_name: str):
 
-    base_url = f"https://www.googleapis.com/compute/v1/projects/{project}/regions/{region}".format(project, region)
+def backend_create_regional(region: str, backend_service_name: str, neg_name: str):
+    base_url = f"https://www.googleapis.com/compute/v1/projects/{project}/regions/{region}".format(
+        project, region
+    )
     neg_url = f"{base_url}/networkEndpointGroups/{neg_name}".format(neg_name)
 
     client = compute_v1.RegionBackendServicesClient()
@@ -115,11 +116,11 @@ def backend_create_regional(region: str, backend_service_name: str, neg_name: st
     request = compute_v1.InsertRegionBackendServiceRequest(
         project=project,
         region=region,
-        backend_service_resource = compute_v1.BackendService(
+        backend_service_resource=compute_v1.BackendService(
             name=backend_service_name,
             protocol="HTTPS",
             load_balancing_scheme="EXTERNAL_MANAGED",
-            backends=[compute_v1.Backend(group=neg_url)]
+            backends=[compute_v1.Backend(group=neg_url)],
         ),
     )
 
@@ -129,25 +130,27 @@ def backend_create_regional(region: str, backend_service_name: str, neg_name: st
     # Handle the response
     return response
 
-def neg_create_regional_cloud_run(region: str, neg_name: str, cloud_run_service_name: str):
+
+def neg_create_regional_cloud_run(
+    region: str, neg_name: str, cloud_run_service_name: str
+):
     request = compute_v1.InsertRegionNetworkEndpointGroupRequest(
         project=project,
         region=region,
-
         network_endpoint_group_resource=compute_v1.NetworkEndpointGroup(
             name=neg_name,
             network_endpoint_type="SERVERLESS",
-
             cloud_run=compute_v1.NetworkEndpointGroupCloudRun(
                 service=cloud_run_service_name
-            )
-        )
+            ),
+        ),
     )
 
     client = compute_v1.RegionNetworkEndpointGroupsClient()
     response = client.insert(request)
     response = response.result()
     return response
+
 
 def urlmap_get(lb: str):
     # Create a client
@@ -156,9 +159,8 @@ def urlmap_get(lb: str):
     # Initialize request argument(s)
     request = compute_v1.GetUrlMapRequest(
         project=project,
-
         # .replace("-target-proxy","")
-        url_map=lb
+        url_map=lb,
     )
 
     # Make the request
@@ -167,15 +169,19 @@ def urlmap_get(lb: str):
     # Handle the response
     return response
 
-def hostrule_add(domain: list, backend_service_name: str, paths: list = ["/test"]):
-    
-    
-    new_lb = lb.replace("-target-proxy","")
-    urlMapObj = urlmap_get(lb = new_lb)
-    # backend_service_name = backend_name
-    base_url = f"https://www.googleapis.com/compute/v1/projects/{project}/global".format(project)
-    backend_url = f"{base_url}/backendServices/{backend_service_name}".format(project, backend_service_name)
 
+def hostrule_add(domain: list, backend_service_name: str, paths: list = ["/test"]):
+    new_lb = lb.replace("-target-proxy", "")
+    urlMapObj = urlmap_get(lb=new_lb)
+    # backend_service_name = backend_name
+    base_url = (
+        f"https://www.googleapis.com/compute/v1/projects/{project}/global".format(
+            project
+        )
+    )
+    backend_url = f"{base_url}/backendServices/{backend_service_name}".format(
+        project, backend_service_name
+    )
 
     # add some random name, can we keep it static?
     path_matcher_name = f"{backend_service_name}-pm".format(backend_service_name)
@@ -183,20 +189,18 @@ def hostrule_add(domain: list, backend_service_name: str, paths: list = ["/test"
     pathMatcherObj = compute_v1.PathMatcher(
         default_service=backend_url,
         name=path_matcher_name,
-        path_rules=[compute_v1.PathRule(service = backend_url, paths = paths)]
+        path_rules=[compute_v1.PathRule(service=backend_url, paths=paths)],
     )
     hostRule = compute_v1.HostRule(hosts=domain, path_matcher=path_matcher_name)
-
 
     urlMapObj.path_matchers.append(pathMatcherObj)
     urlMapObj.host_rules.append(hostRule)
 
     request = compute_v1.UpdateUrlMapRequest(
         project=project,
-        
         # wtf is this, probably Load balancer?
         url_map=new_lb,
-        url_map_resource=urlMapObj
+        url_map_resource=urlMapObj,
     )
 
     # Make the request
@@ -207,6 +211,7 @@ def hostrule_add(domain: list, backend_service_name: str, paths: list = ["/test"
     # Handle the response
     return response
 
+
 # load_balancer = https_proxy_get()
 # print(load_balancer)
 # for certi in load_balancer.ssl_certificates:
@@ -216,7 +221,8 @@ def hostrule_add(domain: list, backend_service_name: str, paths: list = ["/test"
 # x = https_proxy_attach_ssl_certificate()
 # print(x)
 
-def update_routing_rule(new_host,old_host):
+
+def update_routing_rule(new_host, old_host):
     project = config["gcp"]["project_id"]
     lb = config["gcp"]["load_balancer"]
     updated_host = new_host  # Replace with the new host value
@@ -225,13 +231,9 @@ def update_routing_rule(new_host,old_host):
 
     urlmap = client.get(project=project, url_map=lb)
     for url in urlmap.host_rules:
-        
         if url.hosts == [old_host]:
             url.hosts = [updated_host]
 
     response = client.patch(project=project, url_map=lb, url_map_resource=urlmap)
 
-
     return response
-
-

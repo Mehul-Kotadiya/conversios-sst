@@ -154,7 +154,7 @@ subscription_name = "server-side-tagging-topic-sub"
 
 
 @app.get("/create_delete")
-async def create_delete_batch(request: Request):
+def create_delete_batch():
     print("start create delete")
     logging.info("Logging is sucessfully set")
     # certi_create()
@@ -185,10 +185,7 @@ async def create_delete_batch(request: Request):
                 create_delete_patch_lb_front_end(
                     certilist=full_url_certi, fingerprint=finger_print[0]
                 )
-                logging.info("Patch request is sucessfully set")
-                print("Patch request is sucessfully set")
-
-                time.sleep(10)
+                logging.info("Patch request is sucessfully executed")
                 for i in remaining_certificate:
                     logging.info("Under delete request")
                     print("Under delete request")
@@ -198,7 +195,6 @@ async def create_delete_batch(request: Request):
                     print("delete required certi list", certificate_name)
 
                     # Delete non-required certificate
-                    time.sleep(10)
                     create_delete_ssl_delete(certificate_name)
 
             else:

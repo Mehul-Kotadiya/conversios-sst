@@ -10,6 +10,7 @@ from google.cloud import datastore
 import time
 import DomainList
 import logging
+from datetime import datetime
 
 project_id = "server-side-tagging-392006"
 
@@ -193,7 +194,7 @@ def create_delete_batch():
                     certificate_name = i.split("/")[-1]
                     # logging.info("certificate required to delete",certificate_name)
                     print("delete required certi list", certificate_name)
-
+                    exit()
                     # Delete non-required certificate
                     create_delete_ssl_delete(certificate_name)
 
@@ -242,8 +243,19 @@ def create_delete_patch_lb_front_end(certilist: list, fingerprint: str):
     )
 
     logging.info("response before")
+    now = datetime.now()
+
+    current_time = now.strftime("%H:%M:%S")
+    print('patch before time ',current_time)
+    logging.info(request)
     response = client.patch(request=request)
-    response = response.result()
+    result = response.result()
+    print('response',response)
+    print('result',result)
+    logging.info(request)
+    now = datetime.now()
+    current_time = now.strftime("%H:%M:%S")
+    print('patch after time ',str(current_time))
     logging.info("patch function end")
 
     return response
@@ -258,8 +270,10 @@ def create_delete_ssl_delete(certificate_name):
 
     try:
         # Make the delete request
+        logging.info("under delete certi function try")
         response = client.delete(request=request)
         response = response.result()
+        logging.info("delete certi function try block completed")
 
         logging.info("under delete certi function try")
         print("certificate " + certificate_name + " deleted succesfully")

@@ -316,6 +316,7 @@ def get_ssl_certi(certificate_name: str):
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="127.0.0.2", port=8080, reload=True)
+    create_delete_batch()
 
 
 

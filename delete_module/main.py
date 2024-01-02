@@ -16,8 +16,9 @@ config = configparser.ConfigParser()
 config.read("config.ini")
 project = config["gcp"]["project_id"]
 lb = config["gcp"]["load_balancer"]
-proxy_name = "-target-proxy"
 
+proxy_name = "-target-proxy"
+target_https_proxy = lb+proxy_name
 # project_id = "server-side-tagging-392006"
 
 # set up the Google Cloud Logging python client library
@@ -31,6 +32,7 @@ log_client.setup_logging()
 
 datastore_client = datastore.Client()
 lb_client = compute_v1.TargetHttpsProxiesClient()
+
 store_id = []
 # lb = "test-lb-2"
 # proxy_name = "-target-proxy"
@@ -253,10 +255,13 @@ def create_delete_patch_lb_front_end(certilist: list, fingerprint: str):
     # print('under patch lb before request',certilist)
     logging.info("request before")
 
+    request = compute_v1.GetTargetHttpsProxyRequest(project = project, target_https_proxy = target_https_proxy)
+    request_body = lb_client.get(request=request)
+
     request = compute_v1.PatchTargetHttpsProxyRequest(
         project=project,
         target_https_proxy=tar_proxy,
-        target_https_proxy_resource=request_body,
+        target_https_proxy_resource = request_body
     )
 
     logging.info("response before")
@@ -269,7 +274,16 @@ def create_delete_patch_lb_front_end(certilist: list, fingerprint: str):
     logging.info(request)
     print(request)
 
-    response = lb_client.patch(request=request)
+    request = compute_v1.SetSslCertificatesTargetHttpsProxyRequest(
+        project=project,
+        target_https_proxy=target_https_proxy,
+        target_https_proxies_set_ssl_certificates_request_resource = compute_v1.TargetHttpsProxiesSetSslCertificatesRequest(ssl_certificates = certilist)
+    )
+
+    # Make the request
+    response = lb_client.set_ssl_certificates(request=request)
+
+    # response = lb_client.patch(request=request)
     print(response.done())
     result = response.result()
     res = response.done()

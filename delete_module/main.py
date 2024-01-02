@@ -259,7 +259,8 @@ def create_delete_patch_lb_front_end(certilist: list, fingerprint: str):
     response = client.patch(request=request)
     print(response.done())
     result = response.result()
-    print(response.done())
+    res = response.done()
+    print(res)
 
     # exit()
     print('response',response)
@@ -270,7 +271,7 @@ def create_delete_patch_lb_front_end(certilist: list, fingerprint: str):
     print('patch after time ',str(current_time))
     logging.info("patch function end..")
 
-    return response
+    return res
 
 
 def create_delete_ssl_delete(certificate_name):

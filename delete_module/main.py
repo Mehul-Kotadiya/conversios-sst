@@ -12,7 +12,13 @@ import DomainList
 import logging
 from datetime import datetime
 
-project_id = "server-side-tagging-392006"
+config = configparser.ConfigParser()
+config.read('config.ini')
+project = config["gcp"]["project_id"]
+lb = config["gcp"]["load_balancer"]
+proxy_name="-target-proxy"
+
+# project_id = "server-side-tagging-392006"
 
 # set up the Google Cloud Logging python client library
 import google.cloud.logging
@@ -25,8 +31,8 @@ client.setup_logging()
 
 datastore_client = datastore.Client()
 store_id = []
-lb = "test-lb-2"
-proxy_name = "-target-proxy"
+# lb = "test-lb-2"
+# proxy_name = "-target-proxy"
 my_list = []
 certi_fingerprint = []
 be_name = []
@@ -58,7 +64,7 @@ name = []
 final_cert_name = []
 final_status_check_cert = []
 length_check = []
-project = "server-side-tagging-392006"
+# project = "server-side-tagging-392006"
 subscription_name = "server-side-tagging-topic-sub"
 # subscriber = pubsub_v1.SubscriberClient()
 

@@ -169,6 +169,9 @@ def create_delete_batch():
 
     full_url_certi = []
     certificate_99, latest_certificate, remaining_certificate = DomainList.domain_list()
+    logging.info(certificate_99)
+    logging.info(latest_certificate)
+    logging.info(remaining_certificate)
     print("domain list complete")
     logging.info("certificate fetch is sucessfully")
     # print('certificate_99',certificate_99)

@@ -183,20 +183,26 @@ def create_delete_batch():
                 logging.info("fingerprint end")
 
                 # Patch request on Loadbalancer with updated certificate
-                create_delete_patch_lb_front_end(
+                is_executed= create_delete_patch_lb_front_end(
                     certilist=full_url_certi, fingerprint=finger_print[0]
                 )
-                logging.info("Patch request is sucessfully executed")
-                for i in remaining_certificate:
-                    logging.info("Under delete request")
-                    print("Under delete request")
-                    print("delete required certi", remaining_certificate)
-                    certificate_name = i.split("/")[-1]
-                    # logging.info("certificate required to delete",certificate_name)
-                    print("delete required certi list", certificate_name)
-                    exit()
-                    # Delete non-required certificate
-                    create_delete_ssl_delete(certificate_name)
+                if is_executed == True:
+                    logging.info("Is executed true")
+
+                    logging.info("Patch request is sucessfully executed")
+                    for i in remaining_certificate:
+                        logging.info("Under delete request")
+                        print("Under delete request")
+                        print("delete required certi", remaining_certificate)
+                        certificate_name = i.split("/")[-1]
+                        # logging.info("certificate required to delete",certificate_name)
+                        print("delete required certi list", certificate_name)
+                        exit()
+                        # Delete non-required certificate
+                        create_delete_ssl_delete(certificate_name)
+                    else:
+                        logging.info("Is executed false")
+                        print('Patch request under process')
 
             else:
                 return "There is no new certificate is create"
@@ -220,8 +226,9 @@ def create_delete_https_proxy_get():
     # Make the request
     response = client.get(request=request)
     certis = response.ssl_certificates
+    print(f"=== Target Proxy: {tar_proxy} ===")
+    print(response)
     cd_certi_figer_print.append(response.fingerprint)
-
     return cd_certi_figer_print
 
 
@@ -250,7 +257,10 @@ def create_delete_patch_lb_front_end(certilist: list, fingerprint: str):
     logging.info(request)
     print(request)
     response = client.patch(request=request)
+    print(response.done())
     result = response.result()
+    print(response.done())
+
     # exit()
     print('response',response)
     print('result',result)

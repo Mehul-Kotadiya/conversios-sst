@@ -8,7 +8,6 @@ config.read('config.ini')
 project = config["gcp"]["project_id"]
 lb = config["gcp"]["load_balancer"]
 
-
 # def domain_list(new_domain: str,certificate_name: str):
 #     print(lb)
 #     certificates = https_proxy_get(load_balancer=lb)

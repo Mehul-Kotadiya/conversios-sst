@@ -13,23 +13,24 @@ import logging
 from datetime import datetime
 
 config = configparser.ConfigParser()
-config.read('config.ini')
+config.read("config.ini")
 project = config["gcp"]["project_id"]
 lb = config["gcp"]["load_balancer"]
-proxy_name="-target-proxy"
+proxy_name = "-target-proxy"
 
 # project_id = "server-side-tagging-392006"
 
 # set up the Google Cloud Logging python client library
 import google.cloud.logging
 
-client = google.cloud.logging.Client()
-client.setup_logging()
+log_client = google.cloud.logging.Client()
+log_client.setup_logging()
 
 # logging.basicConfig(filename="newfile.log", format='%(asctime)s %(message)s',filemode='w')
 # logging = logging.getlogging()
 
 datastore_client = datastore.Client()
+lb_client = compute_v1.TargetHttpsProxiesClient()
 store_id = []
 # lb = "test-lb-2"
 # proxy_name = "-target-proxy"
@@ -192,7 +193,7 @@ def create_delete_batch():
                 logging.info("fingerprint end")
 
                 # Patch request on Loadbalancer with updated certificate
-                is_executed= create_delete_patch_lb_front_end(
+                is_executed = create_delete_patch_lb_front_end(
                     certilist=full_url_certi, fingerprint=finger_print[0]
                 )
                 if is_executed == True:
@@ -212,7 +213,7 @@ def create_delete_batch():
                         create_delete_ssl_delete(certificate_name)
                     else:
                         logging.info("Is executed false")
-                        print('Patch request under process')
+                        print("Patch request under process")
 
             else:
                 return "There is no new certificate is create"
@@ -226,15 +227,14 @@ def create_delete_batch():
 
 def create_delete_https_proxy_get():
     # add this code block in try catch
-    client = compute_v1.TargetHttpsProxiesClient()
+    # lb_client = compute_v1.TargetHttpsProxiesClient()
     new_lb = lb
     tar_proxy = str(new_lb + proxy_name)
     request = compute_v1.GetTargetHttpsProxyRequest(
-        project=project,
-        target_https_proxy=tar_proxy,
+        project=project, target_https_proxy=tar_proxy
     )
     # Make the request
-    response = client.get(request=request)
+    response = lb_client.get(request=request)
     certis = response.ssl_certificates
     print(f"=== Target Proxy: {tar_proxy} ===")
     print(response)
@@ -245,7 +245,7 @@ def create_delete_https_proxy_get():
 def create_delete_patch_lb_front_end(certilist: list, fingerprint: str):
     logging.info("under patch function")
 
-    client = compute_v1.TargetHttpsProxiesClient()
+    # lb_client = compute_v1.TargetHttpsProxiesClient()
     request_body = {"fingerprint": fingerprint, "ssl_certificates": certilist}
     logging.info("requestbody created")
     new_lb = lb
@@ -260,25 +260,29 @@ def create_delete_patch_lb_front_end(certilist: list, fingerprint: str):
     )
 
     logging.info("response before")
+
     now = datetime.now()
 
     current_time = now.strftime("%H:%M:%S")
-    print('patch before time ',current_time)
+    print("patch before time ", current_time)
+
     logging.info(request)
     print(request)
-    response = client.patch(request=request)
+
+    response = lb_client.patch(request=request)
     print(response.done())
     result = response.result()
     res = response.done()
     print(res)
 
     # exit()
-    print('response',response)
-    print('result',result)
+    print("response", response)
+    print("result", result)
+
     logging.info(request)
     now = datetime.now()
     current_time = now.strftime("%H:%M:%S")
-    print('patch after time ',str(current_time))
+    print("patch after time ", str(current_time))
     logging.info("patch function end..")
 
     return res
@@ -286,7 +290,7 @@ def create_delete_patch_lb_front_end(certilist: list, fingerprint: str):
 
 def create_delete_ssl_delete(certificate_name):
     logging.info("under delete certi function")
-    client = compute_v1.SslCertificatesClient()
+    ssl_client = compute_v1.SslCertificatesClient()
     request = compute_v1.DeleteSslCertificateRequest(
         project=project, ssl_certificate=certificate_name
     )
@@ -294,7 +298,7 @@ def create_delete_ssl_delete(certificate_name):
     try:
         # Make the delete request
         logging.info("under delete certi function try")
-        response = client.delete(request=request)
+        response = ssl_client.delete(request=request)
         response = response.result()
         logging.info("delete certi function try block completed")
 
@@ -306,23 +310,20 @@ def create_delete_ssl_delete(certificate_name):
 
     return response
 
+
 def get_ssl_certi(certificate_name: str):
-    client = compute_v1.SslCertificatesClient()
+    ssl_client = compute_v1.SslCertificatesClient()
 
     request = compute_v1.GetSslCertificateRequest(
-        project=project,
-        ssl_certificate=certificate_name,
+        project=project, ssl_certificate=certificate_name
     )
-    response = client.get(request=request)
+    response = ssl_client.get(request=request)
     return response.managed.status
 
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="127.0.0.2", port=8080, reload=True)
     create_delete_batch()
-
-
-
 
     # # def certi_create():
     # domain_listt_dupli = [

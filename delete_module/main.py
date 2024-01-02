@@ -194,6 +194,7 @@ def create_delete_batch():
                 )
                 if is_executed == True:
                     logging.info("Is executed true")
+                    print("Is executed true")
 
                     logging.info("Patch request is sucessfully executed")
                     for i in remaining_certificate:
@@ -302,11 +303,6 @@ def create_delete_ssl_delete(certificate_name):
 
     return response
 
-
-if __name__ == "__main__":
-    uvicorn.run("main:app", host="127.0.0.2", port=8080, reload=True)
-
-
 def get_ssl_certi(certificate_name: str):
     client = compute_v1.SslCertificatesClient()
 
@@ -317,128 +313,135 @@ def get_ssl_certi(certificate_name: str):
     response = client.get(request=request)
     return response.managed.status
 
-    # def certi_create():
-    domain_listt_dupli = [
-        "exampvcbnle1.com",
-        "testdocvbnmain.net",
-        "dummybvnwebsite.org",
-        "samplvcbepage.com",
-        "mocksite.net",
-        "placevcbnholder.org",
-        "trythisdomain.com",
-        "fauxwebsite.net",
-        "tempdbvnomain.org",
-        "mytestsite.com",
-        "pretendpage.net",
-        "fakedom465ain.org",
-        "trialwebsite.com",
-        "imitationnet.net",
-        "demobvnorg.org",
-        "playdbvnomain.com",
-        "fictiondfgalpage.net",
-        "sandbox.org",
-        "testdummy.com",
-        "faketestsite.net",
-        "notrbvneal.org",
-        "mimicdomain.com",
-        "trialsite.net",
-        "dummywebpage.org",
-        "fauxsite.com",
-        "exagfbnmple.net",
-        "prefgbtendweb.org",
-        "placeholfghderpage.com",
-        "test1net.net",
-        "tempwebsite.org",
-        "trydomain.com",
-        "sampleorg.net",
-        "mockdgbfhummy.org",
-        "mywebsgbvhite.com",
-        "notrealnet.net",
-        "imitationpage.com",
-        "demoorg.net",
-        "playdomain.org",
-        "pretecvbndnet.com",
-        "sandboxsite.net",
-        "testdummy.org",
-        "faketest.com",
-        "notrealpage.net",
-        "mimiccvbdomain.org",
-        "trialsite.com",
-        "dummyweb.net",
-        "fauxsite.org",
-        "examplepage.com",
-        "trywebsite.net",
-        "placeholder.net",
-        "testdomain.org",
-        "fakedummy.com",
-        "samplewebsite.net",
-        "tempdocvbnmain2.org",
-        "mytestsite.com",
-        "pretendpage.net",
-        "fak3etest.org",
-        "imitation.com",
-        "trialsite.net",
-        "dummywebpage.org",
-        "sandboxsite.com",
-        "testdummy.net",
-        "fauxdomain.org",
-        "examplewebsite.com",
-        "notreal.net",
-        "mimi4cpage.org",
-        "playdomain.com",
-        "pret4endweb.net",
-        "tempd1omain1.org",
-        "tryth8isdomain.com",
-        "samplepag6e.net",
-        "mocksdfgs5ite.org",
-        "placeholder.com",
-        "fakedomain.net",
-        "trialwebsite.org",
-        "imitationnet.com",
-        "demoorg.net",
-        "playdomain.org",
-        "notrealwebsite.com",
-        "mimicdomain.net",
-        "trialsite.org",
-        "dummywebpag4e.com",
-        "fauxs3ite.net",
-        "exa7mple.org",
-        "pretend8net.com",
-        "placeholderpage.net",
-        "testnet.org",
-        "tempwebsite.com",
-        "tr1ydomain.net",
-        "sampleorg.org",
-        "mockdummy.com",
-        "mywebsite.net",
-        "notrealne1t.org",
-        "fakedoma7in.net",
-        "imitationpage.net",
-        "demoorg.com",
-        "playdomain.net",
-        "preten6dnet.org",
-        "yrfdtguh.com",
-        "dtfyguhji.com",
-        "gvftr5768y.com",
-        "jkbhgfch987.com",
-        "jkhvtfguy675.com",
-        "wertyu.net",
-        "765rtyujhgftyu.org",
-    ]
-    unique_list = list(set(domain_listt_dupli))
 
-    certi_name = "test-certi-99-test"
-    client = compute_v1.SslCertificatesClient()
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="127.0.0.2", port=8080, reload=True)
 
-    ssl_certificate = compute_v1.SslCertificate(
-        name=certi_name,
-        managed=compute_v1.SslCertificateManagedSslCertificate(domains=unique_list),
-        type="MANAGED",
-    )
-    request = compute_v1.InsertSslCertificateRequest(
-        project=project, ssl_certificate_resource=ssl_certificate
-    )
 
-    response = client.insert(request=request)
-    response = response.result()
-    return response
+
+
+    # # def certi_create():
+    # domain_listt_dupli = [
+    #     "exampvcbnle1.com",
+    #     "testdocvbnmain.net",
+    #     "dummybvnwebsite.org",
+    #     "samplvcbepage.com",
+    #     "mocksite.net",
+    #     "placevcbnholder.org",
+    #     "trythisdomain.com",
+    #     "fauxwebsite.net",
+    #     "tempdbvnomain.org",
+    #     "mytestsite.com",
+    #     "pretendpage.net",
+    #     "fakedom465ain.org",
+    #     "trialwebsite.com",
+    #     "imitationnet.net",
+    #     "demobvnorg.org",
+    #     "playdbvnomain.com",
+    #     "fictiondfgalpage.net",
+    #     "sandbox.org",
+    #     "testdummy.com",
+    #     "faketestsite.net",
+    #     "notrbvneal.org",
+    #     "mimicdomain.com",
+    #     "trialsite.net",
+    #     "dummywebpage.org",
+    #     "fauxsite.com",
+    #     "exagfbnmple.net",
+    #     "prefgbtendweb.org",
+    #     "placeholfghderpage.com",
+    #     "test1net.net",
+    #     "tempwebsite.org",
+    #     "trydomain.com",
+    #     "sampleorg.net",
+    #     "mockdgbfhummy.org",
+    #     "mywebsgbvhite.com",
+    #     "notrealnet.net",
+    #     "imitationpage.com",
+    #     "demoorg.net",
+    #     "playdomain.org",
+    #     "pretecvbndnet.com",
+    #     "sandboxsite.net",
+    #     "testdummy.org",
+    #     "faketest.com",
+    #     "notrealpage.net",
+    #     "mimiccvbdomain.org",
+    #     "trialsite.com",
+    #     "dummyweb.net",
+    #     "fauxsite.org",
+    #     "examplepage.com",
+    #     "trywebsite.net",
+    #     "placeholder.net",
+    #     "testdomain.org",
+    #     "fakedummy.com",
+    #     "samplewebsite.net",
+    #     "tempdocvbnmain2.org",
+    #     "mytestsite.com",
+    #     "pretendpage.net",
+    #     "fak3etest.org",
+    #     "imitation.com",
+    #     "trialsite.net",
+    #     "dummywebpage.org",
+    #     "sandboxsite.com",
+    #     "testdummy.net",
+    #     "fauxdomain.org",
+    #     "examplewebsite.com",
+    #     "notreal.net",
+    #     "mimi4cpage.org",
+    #     "playdomain.com",
+    #     "pret4endweb.net",
+    #     "tempd1omain1.org",
+    #     "tryth8isdomain.com",
+    #     "samplepag6e.net",
+    #     "mocksdfgs5ite.org",
+    #     "placeholder.com",
+    #     "fakedomain.net",
+    #     "trialwebsite.org",
+    #     "imitationnet.com",
+    #     "demoorg.net",
+    #     "playdomain.org",
+    #     "notrealwebsite.com",
+    #     "mimicdomain.net",
+    #     "trialsite.org",
+    #     "dummywebpag4e.com",
+    #     "fauxs3ite.net",
+    #     "exa7mple.org",
+    #     "pretend8net.com",
+    #     "placeholderpage.net",
+    #     "testnet.org",
+    #     "tempwebsite.com",
+    #     "tr1ydomain.net",
+    #     "sampleorg.org",
+    #     "mockdummy.com",
+    #     "mywebsite.net",
+    #     "notrealne1t.org",
+    #     "fakedoma7in.net",
+    #     "imitationpage.net",
+    #     "demoorg.com",
+    #     "playdomain.net",
+    #     "preten6dnet.org",
+    #     "yrfdtguh.com",
+    #     "dtfyguhji.com",
+    #     "gvftr5768y.com",
+    #     "jkbhgfch987.com",
+    #     "jkhvtfguy675.com",
+    #     "wertyu.net",
+    #     "765rtyujhgftyu.org",
+    # ]
+    # unique_list = list(set(domain_listt_dupli))
+
+    # certi_name = "test-certi-99-test"
+    # client = compute_v1.SslCertificatesClient()
+
+    # ssl_certificate = compute_v1.SslCertificate(
+    #     name=certi_name,
+    #     managed=compute_v1.SslCertificateManagedSslCertificate(domains=unique_list),
+    #     type="MANAGED",
+    # )
+    # request = compute_v1.InsertSslCertificateRequest(
+    #     project=project, ssl_certificate_resource=ssl_certificate
+    # )
+
+    # response = client.insert(request=request)
+    # response = response.result()
+    # return response

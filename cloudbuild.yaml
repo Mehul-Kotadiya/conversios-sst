@@ -4,21 +4,21 @@ steps:
       - build
       - '-t'
       - >-
-        asia-south1-docker.pkg.dev/server-side-tagging-392006/update-job/new-update-job:latest
+        asia-south1-docker.pkg.dev/server-side-tagging-392006/dev-backend-sst/dev-backend-sst:latest
       - ./
   - name: gcr.io/cloud-builders/docker
     args:
       - push
       - >-
-        asia-south1-docker.pkg.dev/server-side-tagging-392006/update-job/new-update-job:latest
+        asia-south1-docker.pkg.dev/server-side-tagging-392006/dev-backend-sst/dev-backend-sst:latest
   - name: gcr.io/cloud-builders/gcloud
     args:
       - run
       - deploy
-      - update-server-side
+      - dev-backend-sst
       - '--image'
       - >-
-        asia-south1-docker.pkg.dev/server-side-tagging-392006/update-job/new-update-job:latest
+        asia-south1-docker.pkg.dev/server-side-tagging-392006/dev-backend-sst/dev-backend-sst:latest
       - '--region'
       - asia-south1
       - '--platform'

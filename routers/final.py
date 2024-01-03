@@ -24,7 +24,7 @@ certi_status_check = []
 
 
 # Store user requests into datastore
-@router.post("/datastore_entry")
+@router.post("/create_update")
 async def datastore_entry(request: Request):
     timestamp1 = round(time.time() * 1000)
     payload_bytes = await request.body()
@@ -60,7 +60,7 @@ async def datastore_entry(request: Request):
 
 
 # Its create endpoint run on batch mode (every 5 minutes)
-@router.get("/create")
+@router.get("/datastore_create")
 async def sst_create(request: Request):
     timestamp1 = round(time.time() * 1000)
     certi_status = latest_certi_find()
@@ -190,7 +190,7 @@ async def sst_create(request: Request):
     return {"Payload Details Store to Datastore"}
 
 
-@router.get("/my-update")
+@router.get("/datastore_update")
 async def update(request: Request):
     timestamp1 = round(time.time() * 1000)
 

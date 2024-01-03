@@ -210,12 +210,12 @@ def create_delete_batch():
                         certificate_name = i.split("/")[-1]
                         # logging.info("certificate required to delete",certificate_name)
                         print("delete required certi list", certificate_name)
-                        exit()
+                        # exit()
                         # Delete non-required certificate
                         create_delete_ssl_delete(certificate_name)
-                    else:
-                        logging.info("Is executed false")
-                        print("Patch request under process")
+                else:
+                    logging.info("Is executed false")
+                    print("Patch request under process")
 
             else:
                 return "There is no new certificate is create"
@@ -238,22 +238,22 @@ def create_delete_https_proxy_get():
     # Make the request
     response = lb_client.get(request=request)
     certis = response.ssl_certificates
-    print(f"=== Target Proxy: {tar_proxy} ===")
-    print(response)
+    # print(f"=== Target Proxy: {tar_proxy} ===")
+    # print(response)
     cd_certi_figer_print.append(response.fingerprint)
     return cd_certi_figer_print
 
 
 def create_delete_patch_lb_front_end(certilist: list, fingerprint: str):
-    logging.info("under patch function")
+    # logging.info("under patch function")
 
     # lb_client = compute_v1.TargetHttpsProxiesClient()
     request_body = {"fingerprint": fingerprint, "ssl_certificates": certilist}
-    logging.info("requestbody created")
+    # logging.info("requestbody created")
     new_lb = lb
     tar_proxy = str(new_lb + proxy_name)
     # print('under patch lb before request',certilist)
-    logging.info("request before")
+    # logging.info("request before")
 
     request = compute_v1.GetTargetHttpsProxyRequest(project = project, target_https_proxy = target_https_proxy)
     request_body = lb_client.get(request=request)
@@ -264,15 +264,15 @@ def create_delete_patch_lb_front_end(certilist: list, fingerprint: str):
         target_https_proxy_resource = request_body
     )
 
-    logging.info("response before")
+    # logging.info("response before")
 
     now = datetime.now()
 
     current_time = now.strftime("%H:%M:%S")
     print("patch before time ", current_time)
 
-    logging.info(request)
-    print(request)
+    # logging.info(request)
+    # print(request)
 
     request = compute_v1.SetSslCertificatesTargetHttpsProxyRequest(
         project=project,
@@ -290,10 +290,10 @@ def create_delete_patch_lb_front_end(certilist: list, fingerprint: str):
     print(res)
 
     # exit()
-    print("response", response)
+    # print("response", response)
     print("result", result)
 
-    logging.info(request)
+    # logging.info(request)
     now = datetime.now()
     current_time = now.strftime("%H:%M:%S")
     print("patch after time ", str(current_time))
@@ -312,14 +312,18 @@ def create_delete_ssl_delete(certificate_name):
     try:
         # Make the delete request
         logging.info("under delete certi function try")
+       
         response = ssl_client.delete(request=request)
+        print("-----status----------")
+        print(response.done)
         response = response.result()
+        print(response.done)
         logging.info("delete certi function try block completed")
 
         logging.info("under delete certi function try")
         print("certificate " + certificate_name + " deleted succesfully")
     except Exception as e:
-        logging.info("error occures", e)
+        # logging.info("error occures", e)
         print(f"An error occurred: {e}")
 
     return response

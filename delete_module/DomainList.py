@@ -79,17 +79,17 @@ def domain_list():
             certificate_99 = certificate
         
     # print('99',certificate_99)
-    remaining_certificate = []
-    remaining_certificate = list(dic1.keys())
+    old_certificate = []
+    old_certificate = list(dic1.keys())
     # print('remaining_certificate',remaining_certificate)
     if certificate_99 != None:
-        remaining_certificate.remove(certificate_99)
+        old_certificate.remove(certificate_99)
 
     if latest_certificate != None:
-        remaining_certificate.remove(latest_certificate)
+        old_certificate.remove(latest_certificate)
     # print('done')
     logging.info('domain list function end')
     
-    return certificate_99, latest_certificate,remaining_certificate
+    return certificate_99, latest_certificate,old_certificate
 
 

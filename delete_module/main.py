@@ -18,7 +18,7 @@ project = config["gcp"]["project_id"]
 lb = config["gcp"]["load_balancer"]
 
 proxy_name = "-target-proxy"
-target_https_proxy = lb+proxy_name
+target_https_proxy = lb + proxy_name
 # project_id = "server-side-tagging-392006"
 
 # set up the Google Cloud Logging python client library
@@ -33,18 +33,16 @@ log_client.setup_logging()
 datastore_client = datastore.Client()
 lb_client = compute_v1.TargetHttpsProxiesClient()
 
-store_id = []
+# store_id = []
 # lb = "test-lb-2"
 # proxy_name = "-target-proxy"
-my_list = []
-certi_fingerprint = []
-be_name = []
-neg_name = []
-cd_certi_figer_print = []
-cd_final_certi_list = []
-patch_require_certi = []
-cd_certi_name_prefix = "https://www.googleapis.com/compute/v1/projects/server-side-tagging-392006/global/sslCertificates/"
-cd_full_url_certi = []
+
+
+
+
+lb_figerprint = []
+# cd_certi_name_prefix = "https://www.googleapis.com/compute/v1/projects/server-side-tagging-392006/global/sslCertificates/"
+# cd_full_url_certi = []
 
 
 # create FastAPI app
@@ -63,12 +61,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-name = []
-final_cert_name = []
-final_status_check_cert = []
-length_check = []
+# name = []
+# final_cert_name = []
+# final_status_check_cert = []
+# length_check = []
 # project = "server-side-tagging-392006"
-subscription_name = "server-side-tagging-topic-sub"
+# subscription_name = "server-side-tagging-topic-sub"
 # subscriber = pubsub_v1.SubscriberClient()
 
 # @app.get("/update_delete")
@@ -97,13 +95,13 @@ subscription_name = "server-side-tagging-topic-sub"
 #             # subscription=subscrack=received_message.ack_idiption_path,
 #             # ack_ids=[received_message.ack_id],
 #             # )
-#             certificate_99,latest_certificate,remaining_certificate = DomainList.domain_list()
+#             certificate_99,latest_certificate,old_certificate = DomainList.domain_list()
 #             print('99 certi',certificate_99)
 #             print('latest_time',latest_certificate)
-#             print('remaining_certificate',remaining_certificate)
-#             if len(remaining_certificate)==0:
+#             print('old_certificate',old_certificate)
+#             if len(old_certificate)==0:
 
-#                 # delete_certi=remaining_certificate[0].split("/")[-1]
+#                 # delete_certi=old_certificate[0].split("/")[-1]
 #                 patch_require_certi.append(certificate_99)
 #                 patch_require_certi.append(latest_certificate)
 #                 # print('delete required',delete_certi)
@@ -164,25 +162,19 @@ subscription_name = "server-side-tagging-topic-sub"
 
 
 @app.get("/create_delete")
-def create_delete_batch():
-    print("start create delete")
+def certificate_delete_batch():
+    # print("start create delete")
     logging.info("Logging is sucessfully set")
-    # certi_create()
-    # exit()
 
-    full_url_certi = []
-    certificate_99, latest_certificate, remaining_certificate = DomainList.domain_list()
+    prefix_ssl_certificate = []
+    certificate_99, latest_certificate, old_certificate = DomainList.domain_list()
     logging.info(certificate_99)
     logging.info(latest_certificate)
-    logging.info(remaining_certificate)
-    print("domain list complete")
+    logging.info(old_certificate)
     logging.info("certificate fetch is sucessfully")
-    # print('certificate_99',certificate_99)
-    # print('latest_certificate',latest_certificate)
-    # print('remaining_certificate',remaining_certificate)
-    if len(remaining_certificate) != 0:
-        full_url_certi.append(certificate_99)
-        full_url_certi.append(latest_certificate)
+    if len(old_certificate) != 0:
+        prefix_ssl_certificate.append(certificate_99)
+        prefix_ssl_certificate.append(latest_certificate)
         certi_status = get_ssl_certi(latest_certificate.split("/")[-1])
         print("ssl certi complete")
         logging.info("get ssl certi end")
@@ -191,28 +183,28 @@ def create_delete_batch():
             if certi_status == "PROVISIONING":
                 logging.info("under try")
 
-                finger_print = create_delete_https_proxy_get()
+                finger_print = https_proxy_get()
                 logging.info("fingerprint end")
 
                 # Patch request on Loadbalancer with updated certificate
-                is_executed = create_delete_patch_lb_front_end(
-                    certilist=full_url_certi, fingerprint=finger_print[0]
+                is_executed = set_ssl_certificates_to_lb_front_end(
+                    certilist=prefix_ssl_certificate, fingerprint=finger_print[0]
                 )
                 if is_executed == True:
                     logging.info("Is executed true")
-                    print("Is executed true")
+                    # print("Is executed true")
 
                     logging.info("Patch request is sucessfully executed")
-                    for i in remaining_certificate:
+                    for i in old_certificate:
                         logging.info("Under delete request")
-                        print("Under delete request")
-                        print("delete required certi", remaining_certificate)
+                        # print("Under delete request")
+                        # print("delete required certi", old_certificate)
                         certificate_name = i.split("/")[-1]
                         # logging.info("certificate required to delete",certificate_name)
-                        print("delete required certi list", certificate_name)
+                        # print("delete required certi list", certificate_name)
                         # exit()
                         # Delete non-required certificate
-                        create_delete_ssl_delete(certificate_name)
+                        delete_ssl_certificates(certificate_name)
                 else:
                     logging.info("Is executed false")
                     print("Patch request under process")
@@ -227,7 +219,7 @@ def create_delete_batch():
     return "Function run Successfully-"
 
 
-def create_delete_https_proxy_get():
+def https_proxy_get():
     # add this code block in try catch
     # lb_client = compute_v1.TargetHttpsProxiesClient()
     new_lb = lb
@@ -237,14 +229,14 @@ def create_delete_https_proxy_get():
     )
     # Make the request
     response = lb_client.get(request=request)
-    certis = response.ssl_certificates
+    # certis = response.ssl_certificates
     # print(f"=== Target Proxy: {tar_proxy} ===")
     # print(response)
-    cd_certi_figer_print.append(response.fingerprint)
-    return cd_certi_figer_print
+    lb_figerprint.append(response.fingerprint)
+    return lb_figerprint
 
 
-def create_delete_patch_lb_front_end(certilist: list, fingerprint: str):
+def set_ssl_certificates_to_lb_front_end(certilist: list, fingerprint: str):
     # logging.info("under patch function")
 
     # lb_client = compute_v1.TargetHttpsProxiesClient()
@@ -255,13 +247,15 @@ def create_delete_patch_lb_front_end(certilist: list, fingerprint: str):
     # print('under patch lb before request',certilist)
     # logging.info("request before")
 
-    request = compute_v1.GetTargetHttpsProxyRequest(project = project, target_https_proxy = target_https_proxy)
+    request = compute_v1.GetTargetHttpsProxyRequest(
+        project=project, target_https_proxy=target_https_proxy
+    )
     request_body = lb_client.get(request=request)
 
     request = compute_v1.PatchTargetHttpsProxyRequest(
         project=project,
         target_https_proxy=tar_proxy,
-        target_https_proxy_resource = request_body
+        target_https_proxy_resource=request_body,
     )
 
     # logging.info("response before")
@@ -277,7 +271,9 @@ def create_delete_patch_lb_front_end(certilist: list, fingerprint: str):
     request = compute_v1.SetSslCertificatesTargetHttpsProxyRequest(
         project=project,
         target_https_proxy=target_https_proxy,
-        target_https_proxies_set_ssl_certificates_request_resource = compute_v1.TargetHttpsProxiesSetSslCertificatesRequest(ssl_certificates = certilist)
+        target_https_proxies_set_ssl_certificates_request_resource=compute_v1.TargetHttpsProxiesSetSslCertificatesRequest(
+            ssl_certificates=certilist
+        ),
     )
 
     # Make the request
@@ -302,7 +298,7 @@ def create_delete_patch_lb_front_end(certilist: list, fingerprint: str):
     return res
 
 
-def create_delete_ssl_delete(certificate_name):
+def delete_ssl_certificates(certificate_name):
     logging.info("under delete certi function")
     ssl_client = compute_v1.SslCertificatesClient()
     request = compute_v1.DeleteSslCertificateRequest(
@@ -312,7 +308,7 @@ def create_delete_ssl_delete(certificate_name):
     try:
         # Make the delete request
         logging.info("under delete certi function try")
-       
+
         response = ssl_client.delete(request=request)
         print("-----status----------")
         print(response.done)
@@ -341,7 +337,7 @@ def get_ssl_certi(certificate_name: str):
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="127.0.0.2", port=8080, reload=True)
-    create_delete_batch()
+    certificate_delete_batch()
 
     # # def certi_create():
     # domain_listt_dupli = [
